@@ -1,0 +1,1166 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>南非五大野生動物馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 非洲草原泥土 (African Savannah Earth) */
+      --accent-color: #8B5A2B;
+      --accent-tint: #F6F0EA;
+      --accent-border: #DDCAB7;
+      --accent-highlight: #6E431B;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+      line-height: 1.22;
+      margin-bottom: 0.25rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+      font-weight: 400;
+    }
+
+    /* Content Layouts */
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      justify-content: center;
+      justify-content: safe center;
+    }
+
+    /* Split Layout: Content + Image */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.22fr 0.98fr;
+      gap: clamp(1rem, 2vw, 1.6rem);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .notion-card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-list li {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Grid Layouts */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(0.65rem, 1.1vw, 1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.75rem, 1.2vw, 1.1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* Cards */
+    .notion-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.75rem, 1.25vw, 1.15rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .notion-card.featured {
+      border-left: 4px solid var(--accent-color);
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--accent-tint) 100%);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: clamp(0.35rem, 0.6vw, 0.55rem);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.35rem;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-tag {
+      font-size: clamp(0.82rem, 0.95vw, 0.9rem);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--card-bg-subtle);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.32rem;
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      overflow-y: auto;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .card-list li {
+      position: relative;
+      padding-left: 14px;
+      line-height: 1.48;
+    }
+    .card-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+    .card-list strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .card-highlight {
+      margin-top: 0.35rem;
+      padding: 6px 10px;
+      background: var(--accent-tint);
+      border: 1px dashed var(--accent-border);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-highlight);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Metric Chips */
+    .metric-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+    .metric-chip {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    /* Image Display Panel */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+      min-height: 0;
+    }
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      flex: 1;
+      min-height: 0;
+    }
+    .image-fallback {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, var(--accent-tint) 100%);
+      padding: 1.5rem;
+      text-align: center;
+      border: 2px dashed var(--accent-border);
+      border-radius: var(--radius-md);
+      margin: 8px;
+    }
+    .image-fallback-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent-color);
+    }
+    .image-fallback strong {
+      font-size: 1.05rem;
+      color: var(--ink-primary);
+      margin-bottom: 0.3rem;
+    }
+    .image-fallback-text {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+    }
+    .image-caption {
+      padding: 8px 14px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.84rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 3vw, 2.5rem);
+      z-index: 90;
+      flex-shrink: 0;
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border-color: var(--accent-border);
+    }
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kbd {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .btn-next-race {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--accent-color);
+      border: 1px solid var(--accent-highlight);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+    .btn-next-race:hover {
+      background: var(--accent-highlight);
+      transform: translateY(-1px);
+    }
+
+    .traceability-pill {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+    .traceability-pill strong {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .split-layout { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .image-panel { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck -->
+  <main class="slides-deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-slide="1" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🦁 賽事名片與封面</div>
+        <h1 class="slide-title">南非五大野生動物馬拉松 (Big Five Marathon)</h1>
+        <div class="slide-subtitle">奔馳於無圍欄非洲大草原，與「非洲五霸」共處同一片天地的終極生態跑旅</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🏃 賽事基本定位</span>
+                <span class="card-tag">UNESCO 生態圈</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>創辦機構</strong>：2005 年由丹麥知名冒險旅遊機構 Albatros Adventure 創立</li>
+                  <li><strong>地理位置</strong>：南非北部林波波省恩塔貝尼野生動物保護區（22,000 公頃）</li>
+                  <li><strong>生態核心</strong>：全程無人工圍欄隔絕，直面非洲五霸（獅、象、水牛、豹、犀牛）</li>
+                  <li><strong>全球殊榮</strong>：《富比士》雜誌評選為全球十大最值得造訪的生態跑旅賽事</li>
+                  <li><strong>嚴格管制</strong>：為維護脆弱生態與人身安全，全球參賽名額嚴格限制 300 人以內</li>
+                </ul>
+                <div class="metric-chip-row">
+                  <span class="metric-chip">無圍欄保護區</span>
+                  <span class="metric-chip">非洲五霸棲息地</span>
+                  <span class="metric-chip">限量 300 名</span>
+                </div>
+              </div>
+              <div class="card-highlight">
+                22,000 公頃無圍欄大草原 ｜ 與非洲五大野生猛獸共處同一天地
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🌍 跑旅核心精神</span>
+                <span class="card-tag">荒野敬畏</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>生態定位</strong>：跑者不是這片土地的主人，而只是野生動物世界裡的短暫訪客</li>
+                  <li><strong>極限地形</strong>：近 1,500 公尺高原稀薄空氣、43 度黃木谷水泥陡坡與 10 公里深沙地</li>
+                  <li><strong>專屬獵遊</strong>：官方全包式 6 晚 / 7 晚 Safari 套裝，賽前 3 小時吉普車勘查賽道</li>
+                  <li><strong>維安戒護</strong>：低空巡邏直升機盤旋、30 名武裝巡邏員與 4x4 車隊全程戒護</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                不追求個人 PB ｜ 在嚴酷地貌與浩瀚星空下重新定義體能極限
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/bigfive_01.jpg" alt="南非五大野生動物馬拉松 大草原跑者與野生動物" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🦁</div>
+              <strong>奔馳於無圍欄非洲大草原</strong>
+              <div class="image-fallback-text">圖片路徑：images/bigfive_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：恩塔貝尼野生大草原 ｜ 奔跑於無人工圍欄隔絕的原生動物棲息地</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-slide="2" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">📋 賽事基本資訊</div>
+        <h1 class="slide-title">競賽規程與極限數據</h1>
+        <div class="slide-subtitle">限量 300 名跑者的高原生態挑戰，全包式獵遊套裝與嚴格年齡規範</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⏱️ 舉辦時程與組別</span>
+              <span class="card-tag">名額嚴限</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>舉辦時間</strong>：每年 6 月中旬（南非冬季，氣候乾燥適跑）</li>
+                <li><strong>未來日期</strong>：2026/6/13、2027/6/19、2028/6/17</li>
+                <li><strong>競賽組別</strong>：全馬 42.195 km（黑布）、半馬 21.097 km（紅布）</li>
+                <li><strong>年齡限制</strong>：全程馬拉松需滿 18 歲，半程馬拉松需滿 16 歲</li>
+                <li><strong>晶片配戴</strong>：配發兩張晶片號碼布，須佩戴於前胸與後背</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">全馬限 18 歲</span>
+                <span class="metric-chip">半馬限 16 歲</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛰️ 垂直爬升與海拔</span>
+              <span class="card-tag">極限高低差</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>累積爬升</strong>：全馬累積爬升約 885 至 900 公尺</li>
+                <li><strong>極限落差</strong>：賽道最高點與最低點落差超過 540 公尺</li>
+                <li><strong>基準海拔</strong>：全線位於海拔近 1,500 公尺高原，空氣相對乾冷稀薄</li>
+                <li><strong>劇烈溫差</strong>：白天 15°C~25°C 陽光充足，清晨夜間驟降至 0°C</li>
+                <li><strong>時間預估</strong>：完賽時間通常比平地馬拉松增加 25% 至 30% 以上</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">爬升 900m</span>
+                <span class="metric-chip">落差 540m</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🏜️ 賽道地質與生態</span>
+              <span class="card-tag">80% 越野</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>越野路面</strong>：約 80% 為未鋪裝紅土、碎石、岩石與深層鬆軟沙地</li>
+                <li><strong>自然環境</strong>：隸屬 Waterberg 生物圈，為完全無瘧疾健康環境</li>
+                <li><strong>五霸共處</strong>：賽道直接穿越獅群活動領地，沿途可見象群與水牛</li>
+                <li><strong>路線彈性</strong>：若動物靠近賽道，大會將微調路線或延後起跑</li>
+                <li><strong>跑者守則</strong>：若巡邏員要求登車回避，跑者必須無條件服從</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">紅土碎石</span>
+                <span class="metric-chip">無瘧疾環境</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🛡️ 立體安全防護體系</span>
+              <span class="card-tag">武裝警戒</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>空中直升機</strong>：配置直升機在賽道上空持續低空盤旋監控猛獸</li>
+                <li><strong>武裝巡獵員</strong>：約 30 名專業 Rangers 手持步槍部署於補給站與險段</li>
+                <li><strong>機動吉普車</strong>：多輛 4x4 越野車在賽道巡視，兼具警戒與醫療救援</li>
+                <li><strong>前夜追蹤</strong>：開賽前一晚對獅群進行精準追蹤與棲息位置盯防</li>
+                <li><strong>安全承諾</strong>：創辦以來維持完善防護，人身安全具備嚴謹保障</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">直升機監控</span>
+                <span class="metric-chip">30 名武裝巡邏員</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-slide="3" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">⚡ 賽道結構與魔王路段</div>
+        <h1 class="slide-title">43 度極陡水泥坡與 10 公里雙軌深沙地</h1>
+        <div class="slide-subtitle">征服南半球最陡坡道黃木谷，與深陷 20 公分鬆軟沙地的體能考驗</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🗺️ 賽道分段結構剖析</span>
+                <span class="card-tag">全馬 42.195 km</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>起跑適應（0~10 km）</strong>：高原大草原開闊紅土碎石徑，需平穩節奏適應高原呼吸</li>
+                  <li><strong>黃木谷陡降（11~14 km）</strong>：衝入 43 度極陡水泥斜坡，股四頭肌承受劇烈離心衝擊</li>
+                  <li><strong>深沙長廊（15~24 km）</strong>：長達 10 公里越野車雙軌深沙地，每步深陷 20 公分，步幅驟縮</li>
+                  <li><strong>黃木谷爬升（25~28 km）</strong>：逆向原路爬升 43 度水泥坡，南半球最陡峭路段步步為營</li>
+                  <li><strong>草原終章（29~42.195 km）</strong>：穿過野生動物灌木棲息區，通過終點完成極限洗禮</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                賽前 3 小時吉普車巡勘 ｜ 提前熟記補給站與沙地地貌
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🛑 兩大地獄考驗與信物手環</span>
+                <span class="card-tag">信物驗證</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>黃木谷（Yellowwood Valley）</strong>：43 度水泥坡，去程務必採「S 型鋸齒跑法」減緩膝蓋衝擊</li>
+                  <li><strong>專屬信物手環（Wristband）</strong>：大會於黃木谷水站發放信物手環，終點無手環直接取消資格</li>
+                  <li><strong>雙軌深沙地（Sand Section）</strong>：長達 6 英哩鬆軟深沙，小腿肌群負擔極重，極易引發抽筋</li>
+                  <li><strong>嚴格關門時間</strong>：全馬第 1 關門點（26.5 km / 4:15）、第 2 關門點（32.5 km / 5:30）、終點限時 7 小時（半馬限時 6:45）</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                出沙地強烈建議換穿乾淨跑襪 ｜ 嚴禁遺失信物手環
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/bigfive_02.jpg" alt="南非五大野生動物馬拉松 黃木谷陡坡與深沙地賽道" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏜️</div>
+              <strong>黃木谷陡坡與深沙地賽道</strong>
+              <div class="image-fallback-text">圖片路徑：images/bigfive_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：黃木谷極陡坡道 ｜ 43 度極限斜度考驗跑者股四頭肌與意志力</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-slide="4" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎟️ 報名資格與搶票攻略</div>
+        <h1 class="slide-title">限量 300 名與全包式 Safari 行程</h1>
+        <div class="slide-subtitle">不開放單獨購票，官方全包式獵遊與住宿套裝的報名機制</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛺ 6 晚經典套裝行程</span>
+              <span class="card-tag">核心推薦</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>營地住宿</strong>：Wildside 帳篷營地、Lakeside Lodge 或 Legend Safari Resort</li>
+                <li><strong>包含項目</strong>：約翰尼斯堡機場往返專車接送、全程三餐與保證參賽名額</li>
+                <li><strong>獵遊車巡</strong>：早晚開篷 4x4 Safari 車巡、賽前 3 小時賽道實地勘查日</li>
+                <li><strong>慶典晚宴</strong>：賽後傳統露天 Boma 營火慶功晚宴與南非炭火烤肉（Braai）</li>
+                <li><strong>報名時程</strong>：名額極度限量，報名於行程出發前 90 天正式截止</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">6 晚住宿全包</span>
+                <span class="metric-chip">賽前勘查日</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌍 7 晚深度人文套裝</span>
+              <span class="card-tag">歷史人文</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>住宿規劃</strong>：前 2 晚 Zebra Stables 渡假村 + 後 5 晚 Legend Safari Resort</li>
+                <li><strong>人文巡禮</strong>：參訪索維托（Soweto）黑人文化樞紐與種族隔離博物館</li>
+                <li><strong>歷史遺跡</strong>：參觀 Hector Pieterson 紀念館與 Zebra 保護區專屬生態導覽</li>
+                <li><strong>賽事權益</strong>：包含 6 晚經典套裝全部賽事參賽權、賽道巡勘與營火晚宴</li>
+                <li><strong>適合跑者</strong>：期望兼顧南非近代歷史人文與野生動物跑旅的跑者</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">索維托文化</span>
+                <span class="metric-chip">種族隔離博物館</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🦁 賽後延伸：克魯格巡禮</span>
+              <span class="card-tag">延伸 4 晚</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>營地地點</strong>：Manyeleti 保護區 Khoka Moya Camp（賽後加購 4 晚）</li>
+                <li><strong>地理優勢</strong>：緊鄰舉世聞名的克魯格國家公園（Kruger National Park）</li>
+                <li><strong>叢林冒險</strong>：原始灌木林樹頂高空溜索冒險（Zipline）與徒步尋蹤</li>
+                <li><strong>全景之路</strong>：探訪上帝之窗（God's Window）、波克幸運壺穴與薩爾峽谷</li>
+                <li><strong>生態密度</strong>：極高密度大型野生動物觀測機會，深度沉浸原始非洲</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">克魯格國家公園</span>
+                <span class="metric-chip">上帝之窗</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌊 賽後延伸：瀑布與大象</span>
+              <span class="card-tag">跨國 4 晚</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>跨國巡禮</strong>：辛巴威維多利亞瀑布 + 波札那喬貝國家公園（4 晚）</li>
+                <li><strong>世界奇景</strong>：包含約翰尼斯堡至辛巴威來回機票，親臨世界三大瀑布之一</li>
+                <li><strong>大象王國</strong>：波札那 Chobe 國家公園探訪世界最大規模野生非洲象群</li>
+                <li><strong>水上晚宴</strong>：尚比西河（Zambezi River）日落遊船晚宴與河馬鱷魚觀測</li>
+                <li><strong>極致跑旅</strong>：一次收穫世界自然奇景瀑布與跨國原始大象棲地的夢幻體驗</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">維多利亞瀑布</span>
+                <span class="metric-chip">喬貝象群獵遊</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-slide="5" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🚗 交通住宿與領物寄物</div>
+        <h1 class="slide-title">機場接駁、營地住宿與嚴謹報到規範</h1>
+        <div class="slide-subtitle">從約翰尼斯堡前往恩塔貝尼保護區，官方接駁、裝備規範與行李保管</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">✈️ 機場往返與官方專車</span>
+              <span class="card-tag">大會接駁</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>集結門戶</strong>：約翰尼斯堡奧利弗·坦博國際機場（JNB）為唯一官方集結點</li>
+                <li><strong>專車接送</strong>：大會安排舒適空調長途巴士專車接駁直達保護區</li>
+                <li><strong>行車時間</strong>：單程車程約 3.5 至 4 小時，沿途欣賞南非高地荒原風光</li>
+                <li><strong>園區管制</strong>：保護區內部未開放自駕進入，全程由大會 4x4 車隊統一調度</li>
+                <li><strong>返程服務</strong>：行程結束當日安排專車接送返回 JNB 機場搭機返國</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              班機抵達與離境時間須符合大會接駁窗口
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛺ 野生保護區營地住宿</span>
+              <span class="card-tag">自然共融</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>Wildside 營地</strong>：豪華帆布帳篷營地，夜間可聆聽大草原蟲鳴與獸吼</li>
+                <li><strong>Legend 渡假村</strong>：提供標準度假飯店級設施、景觀泳池與舒適起居</li>
+                <li><strong>夜間守則</strong>：保護區入夜後嚴禁跑者單獨走動，需由營地守衛陪同護送</li>
+                <li><strong>全包膳食</strong>：包含豐盛歐陸式早餐、原野叢林午餐與南非傳統燒烤晚餐</li>
+                <li><strong>無痕山林</strong>：嚴格遵守自然保育規範，保護區內嚴禁遺留任何廢棄物</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              無瘧疾環境 ｜ 享受純粹原始生態與安全起居
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📦 報到巡勘與終點寄物</span>
+              <span class="card-tag">賽前勘查</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>賽道巡勘（Inspection）</strong>：賽前一日搭乘 4x4 車隊實勘全賽道 3 小時</li>
+                <li><strong>技術會議</strong>：巡勘後召開強制性技術簡報會議，領取號碼布與計時晶片</li>
+                <li><strong>雙號碼布配戴</strong>：兩張晶片號碼布須牢固固定於胸前與後背，嚴禁折疊</li>
+                <li><strong>起終點寄物</strong>：大會設有寄物處，跑者可寄放賽後防寒衣物與換洗衣物</li>
+                <li><strong>沙地備用襪點</strong>：大會於深沙地路段出口水站提供預放乾淨備用襪服務</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              賽道巡勘日為必備流程 ｜ 掌握路面地貌與水站
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-slide="6" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎒 跑步裝備、補給與氣候應變</div>
+        <h1 class="slide-title">越野抓地鞋、深沙防護與日夜溫差</h1>
+        <div class="slide-subtitle">應對乾燥高原氣候與深沙摩擦，個人化能量補給與保暖防護</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">☀️ 高原氣候與溫差對策</span>
+              <span class="card-tag">20°C 溫差</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>日間適跑溫</strong>：白天陽光充足乾燥，氣溫約 15°C~25°C，紫外線極強</li>
+                <li><strong>清晨夜間低溫</strong>：日夜溫差劇烈，清晨起跑與夜間可驟降至 0°C（32°F）</li>
+                <li><strong>防曬三件套</strong>：必備遮陽帽、越野太陽眼鏡與高係數 SPF 30 以上防曬乳</li>
+                <li><strong>早晚禦寒</strong>：參加 Safari 與營火晚宴必備防風厚外套、保暖毛帽與手套</li>
+                <li><strong>定時補水</strong>：高原乾冷氣候汗水揮發極快，即使不覺口渴亦須定時補水</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              劇烈日夜溫差 ｜ 隨身備妥早晚防寒層與防曬裝備
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">👟 跑鞋防沙與裝備配置</span>
+              <span class="card-tag">深齒越野鞋</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>跑鞋選擇</strong>：強烈建議穿著具備深齒紋的越野跑鞋，確保碎石與紅土抓地</li>
+                <li><strong>防沙綁腿</strong>：可搭配輕量越野防沙套（Gaiters）防止細沙灌入鞋內</li>
+                <li><strong>預備跑襪</strong>：隨身攜帶或在水站預置乾淨跑襪，通過 10 公里深沙地後立即更換</li>
+                <li><strong>防磨防泡</strong>：腳趾與腳底預先塗抹防磨膏或貼透氣膠布，防止水泡爆發</li>
+                <li><strong>機能服裝</strong>：排汗短袖搭配機能壓縮跑褲，防護灌木刮刺並穩定肌肉</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              10 公里深沙是水泡溫床 ｜ 換穿乾淨跑襪是完賽秘訣
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🍌 賽道補給與個人能量品</span>
+              <span class="card-tag">自備能量膠</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>官方水站</strong>：沿途設有多處水站，供應純水、運動電解質飲料與新鮮香蕉</li>
+                <li><strong>能量膠自備</strong>：保護區內部無法採購能量膠（Gels），跑者須自國外自備充足</li>
+                <li><strong>鹽錠電解質</strong>：乾燥原野下流汗不易察覺，建議每 45 分鐘補充一次鹽錠</li>
+                <li><strong>陡坡步頻策略</strong>：黃木谷下坡不可暴衝，上坡採小碎步推蹬以保存體力</li>
+                <li><strong>關門時間意識</strong>：隨時關注 26.5 km（4:15）與 32.5 km（5:30）關門時限</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              保護區無能量補給品售賣 ｜ 能量膠與鹽錠務必自備
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-slide="7" data-source="[[南非五大野生動物馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🗺️ 賽後觀光與跳轉導航</div>
+        <h1 class="slide-title">Boma 營火慶功與世界荒野巡禮</h1>
+        <div class="slide-subtitle">體驗南非傳統星空營火烤肉晚宴，銜接下一站世界遺產古文明賽事</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🌟 賽後慶祝與生態探索</span>
+                <span class="card-tag">非洲營火</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>Boma 營火晚宴</strong>：賽後夜間於傳統露天營地享用南非炭火烤肉（Braai）與營火晚會</li>
+                  <li><strong>榮耀頒獎典禮</strong>：在浩瀚非洲星空下領取獨一無二的五大動物完賽獎牌與證書</li>
+                  <li><strong>敞篷吉普車巡遊</strong>：賽後悠閒搭乘 Safari 越野車，近距離觀賞獅群、象群與長頸鹿</li>
+                  <li><strong>跨國奇景延伸</strong>：可銜接加購行程前往克魯格國家公園、維多利亞瀑布與喬貝大象保護區</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                露天炭火烤肉 Braai ｜ 敬畏大自然與生命極限的永恆回憶
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🧭 賽事跳轉導航</span>
+                <span class="card-tag">雙向導航</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>下一站賽事</strong>：[[吳哥窟王朝馬拉松]]（亞洲熱帶雨林與千年世界遺產古文明賽道）</li>
+                  <li><strong>賽事主題</strong>：進入第三主題「世界遺產與自然荒野賽道」</li>
+                  <li><strong>總索引回訪</strong>：隨時返回首頁索引查看 12 場賽事矩陣與知識圖譜</li>
+                </ul>
+                <div style="display: flex; gap: 10px; margin-top: 0.6rem;">
+                  <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home">
+                    🏠 返回總首頁索引
+                  </a>
+                  <a href="吳哥窟王朝馬拉松.html" class="btn-next-race">
+                    ➡️ 下一站：吳哥窟王朝馬拉松
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/bigfive_03.jpg" alt="南非五大野生動物馬拉松 完賽榮耀與生態營地" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>征服非洲草原完賽榮耀</strong>
+              <div class="image-fallback-text">圖片路徑：images/bigfive_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：星空下營地慶功 ｜ 征服 43 度陡坡與非洲大草原的榮耀完賽證書</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[南非五大野生動物馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[南非五大野生動物馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,971 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>義大利羅馬馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 古城石灰赭 (Limestone Ochre) */
+      --accent-color: #8C6D48;
+      --accent-tint: #F6F1EA;
+      --accent-border: #DCD0C0;
+      --accent-highlight: #6E5233;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.2rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+    }
+
+    /* Body Container */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      min-height: 0;
+    }
+
+    /* Cards System */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.85rem, 1.25vw, 1.25rem);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      line-height: 1.62;
+      flex: 1;
+    }
+
+    .card-text strong {
+      color: var(--ink-primary);
+    }
+
+    .card-highlight {
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-color);
+      border-left: 3px solid var(--accent-color);
+      font-weight: 500;
+    }
+
+    /* Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+
+    /* Split 2-Column Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(0.9rem, 1.6vw, 1.6rem);
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-text {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Image Display Container */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      height: 100%;
+      min-height: 220px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, #EBE8E1 100%);
+      color: var(--ink-secondary);
+      gap: 8px;
+    }
+
+    .image-fallback-icon {
+      font-size: 2.2rem;
+      opacity: 0.85;
+    }
+
+    .image-fallback-text {
+      font-size: 0.88rem;
+      color: var(--ink-tertiary);
+    }
+
+    .image-caption {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    /* Metrics Bar */
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.55rem;
+    }
+
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--ink-secondary);
+    }
+
+    .metric-chip strong {
+      color: var(--accent-color);
+      margin-left: 2px;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      border-top: 1px solid var(--border-color);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.2rem, 3.2vw, 3.2rem);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+
+    .nav-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd {
+      padding: 2px 6px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .traceability-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .traceability-pill strong {
+      color: var(--accent-color);
+    }
+
+    /* Jump Button in Slide 7 */
+    .jump-box {
+      margin-top: 0.65rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .jump-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--accent-tint);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .jump-btn:hover {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 900px) {
+      .grid-4, .grid-3, .split-layout { grid-template-columns: 1fr; }
+      .nav-tips { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck Container -->
+  <main class="slides-deck" id="deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏛️ 賽事名片 ｜ 露天古城奇蹟</span>
+        <h1 class="slide-title">義大利羅馬馬拉松 (Run Rome The Marathon)</h1>
+        <p class="slide-subtitle">流動的露天博物館 ｜ 穿梭兩千年帝國遺跡與巴洛克榮耀的古典跑旅</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">📜 賽事定位與永恆之城</div>
+              <div class="metrics-row">
+                <span class="metric-chip">• 義大利田協<strong>FIDAL金標</strong></span>
+                <span class="metric-chip">• WMM<strong>官方合作賽事</strong></span>
+                <span class="metric-chip">• 關門時限<strong>寬鬆 7 小時</strong></span>
+                <span class="metric-chip">• 賽期<strong>每年 3 月中</strong></span>
+              </div>
+              <p class="card-text">
+                歐洲最具歷史震撼力的城市馬拉松之一。賽事以羅馬競技場為宏偉背景出發，終點設於古羅馬戰車競賽場馬克西穆斯競技場，穿梭於聖彼得大教堂、聖天使城堡與特雷維噴泉，被全球跑者譽為「奔跑於文明史詩中的朝聖之旅」。
+              </p>
+              <div class="card-highlight">
+                免繁瑣抽籤、早鳥門檻親民，是新手前進歐洲歷史名城全馬的最佳首選。
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🌟 三大核心特色摘要</div>
+              <p class="card-text">
+                • <strong>世界遺產沉浸</strong>：全程經過數十處世界級歷史古蹟，視覺震撼無與倫比。<br>
+                • <strong>玄武岩石板路考驗</strong>：穿插 3 至 7 公里古老聖彼得石（Sampietrini）路面。<br>
+                • <strong>免抽籤友善報名</strong>：採階梯式報名，提供海外跑者免體檢之「非競技組」直通。
+              </p>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/rome_01.jpg" alt="義大利羅馬馬拉松 封面實景" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏛️</div>
+              <strong>羅馬競技場起跑盛況</strong>
+              <div class="image-fallback-text">圖片路徑：images/rome_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：古羅馬競技場前起跑 ｜ 穿越兩千年帝國文明起點</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">📋 規格認證 ｜ 基本資訊</span>
+        <h2 class="slide-title">賽事基本資訊與核心規格</h2>
+        <p class="slide-subtitle">平坦地勢與 7 小時超長時限，兼顧古蹟維護節奏與慢旅完賽體驗</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">⏱️ 賽事時程與限時</div>
+            <p class="card-text">
+              • <strong>舉辦月份</strong>：每年 3 月中旬週日。<br>
+              • <strong>關門限時</strong>：7 小時（超寬裕）。<br>
+              • <strong>參賽規模</strong>：上限 30,000 名跑者。
+            </p>
+            <div class="card-highlight">
+              時限充裕，初階跑者可邊跑邊賞景無關門壓力。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📈 海拔落差與坡度</div>
+            <p class="card-text">
+              • <strong>累計爬升</strong>：約 20 公尺（約 60 英尺）。<br>
+              • <strong>累計下降</strong>：約 25 公尺。<br>
+              • <strong>地形趨勢</strong>：極度平緩之城市河谷地勢。
+            </p>
+            <div class="card-highlight">
+              總體垂直起伏極小，體能輸出均勻平穩。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏃 賽道地形與難度</div>
+            <p class="card-text">
+              • <strong>路面屬性</strong>：平整柏油路 ＋ 石板路。<br>
+              • <strong>難度分級</strong>：中等（考驗腳踝穩定）。<br>
+              • <strong>完賽率</strong>：歷年常態高達 95% 以上。
+            </p>
+            <div class="card-highlight">
+              石板路縫隙多，需慎選高緩震與防滑跑鞋。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏅 國際組織認證標籤</div>
+            <p class="card-text">
+              • <strong>標籤認證</strong>：FIDAL 義大利金標籤。<br>
+              • <strong>賽事體系</strong>：世界田總（WA）認可賽事。<br>
+              • <strong>合作聯盟</strong>：AbbottWMM 官方合作夥伴。
+            </p>
+            <div class="card-highlight">
+              歐洲頂級規範，晶片計時與救護網絡完善。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🗺️ 賽道路況 ｜ 魔王路段</span>
+        <h2 class="slide-title">賽道結構與關鍵魔王路段剖析</h2>
+        <p class="slide-subtitle">帝國廣場出發，穿梭梵蒂岡聖伯多祿大殿，迎戰老城區玄武岩考驗</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">🧭 四大經典歷史賽段</div>
+              <p class="card-text">
+                • <strong>0-10km（古典地標巡航）</strong>：帝國廣場背對競技場出發，行經威尼斯廣場與金字塔，路面平坦寬闊。<br>
+                • <strong>10-25km（台伯河與梵蒂岡）</strong>：沿台伯河岸前進，直面聖天使堡與聖伯多祿大殿協和大道。<br>
+                • <strong>25-35km（老城北段）</strong>：穿過奧古斯都帝王陵墓與人民廣場，進入沉穩配速段落。<br>
+                • <strong>35-42.195km（古蹟核心衝線）</strong>：經西班牙階梯、特雷維噴泉、納沃納廣場，在競技場衝線。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">⚠️ 魔王路段：32-42km 聖彼得石板路（Sampietrini）</div>
+              <p class="card-text">
+                • <strong>痛點剖析</strong>：最後 10 公里穿梭古城核心，數百年玄武岩凹凸多縫，雨天易滑且極耗腳踝肌群。<br>
+                • <strong>通關策略</strong>：選用抓地強與高緩震跑鞋；石板路縮小步幅、提高步頻，避免轉彎急煞。
+              </p>
+              <div class="card-highlight">
+                踩穩石磚步頻，讓兩千年古蹟為您的衝刺喝采！
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/rome_02.png" alt="義大利羅馬馬拉松 路線圖" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗺️</div>
+              <strong>羅馬古城全景賽道路線圖</strong>
+              <div class="image-fallback-text">圖片路徑：images/rome_02.png</div>
+            </div>
+            <div class="image-caption">圖 2：羅馬馬拉松穿梭梵蒂岡與老城核心經典路線</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🎫 資格門檻 ｜ 搶票攻略</span>
+        <h2 class="slide-title">報名管道與義大利體檢合規指南</h2>
+        <p class="slide-subtitle">先報先得階梯制定價：海外跑者必懂的「非競技組」免體檢通關秘訣</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">🎲 1. 階梯定價（免抽籤）</div>
+            <p class="card-text">
+              • <strong>早鳥優惠期</strong>：€89 至 €99（名額先到先得）。<br>
+              • <strong>標準與晚鳥</strong>：€109 至 €139+。<br>
+              • <strong>額滿機制</strong>：上限 30,000 人額滿即止。<br>
+              • <strong>轉讓條款</strong>：賽前可付費轉讓或延期。
+            </p>
+            <div class="card-highlight">
+              無抽籤不確定性，提早規劃越早買越划算。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🌟 2. 非競技組（海外推薦）</div>
+            <p class="card-text">
+              • <strong>適用對象</strong>：追求完賽體驗之海外跑者。<br>
+              • <strong>免除手續</strong>：免買 RUNCARD、免開立體檢證明。<br>
+              • <strong>報名手續</strong>：僅需於 ENDU 簽署健康切結聲明。<br>
+              • <strong>成績紀錄</strong>：個人完賽成績正式記錄並獲獎牌。
+            </p>
+            <div class="card-highlight">
+              省去繁瑣海外醫療體檢，最輕鬆參賽路徑！
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">⚡ 3. 競賽組與 RUNCARD</div>
+            <p class="card-text">
+              • <strong>適用對象</strong>：爭取官方總排名與分組獎項者。<br>
+              • <strong>認證要求</strong>：持有田協證照或購買 RUNCARD（€30）。<br>
+              • <strong>體檢規範</strong>：需嚴格開立包含心電圖、肺活量、尿檢之義大利官方運動體檢表。<br>
+              • <strong>審核平台</strong>：賽前 10 天上傳審核。
+            </p>
+            <div class="card-highlight">
+              競賽門檻嚴格，非爭取名次建議選非競技組。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🤝 4. 接力賽與歡樂跑</div>
+            <p class="card-text">
+              • <strong>Run4Rome 接力賽</strong>：4 人分擔 42km 全馬。<br>
+              • <strong>Fun Run 5k</strong>：賽前一天於競技場舉行。<br>
+              • <strong>參賽門檻</strong>：歡樂跑不設任何體能與年齡限制。<br>
+              • <strong>親友同樂</strong>：極適合全家或同行親友參與。
+            </p>
+            <div class="card-highlight">
+              全方位兼顧各類跑旅伴侶的多元組別。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🚆 後勤物流 ｜ 起終點動線</span>
+        <h2 class="slide-title">交通後勤、五大住宿選址與 Expo 領物</h2>
+        <p class="slide-subtitle">起終點皆臨近地鐵 B 線：依預算與拖行李便利度鎖定住宿首選</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">📍 起終點交通與地鐵聯網</div>
+            <p class="card-text">
+              • <strong>起點位置</strong>：帝國廣場大道（鄰近地鐵 B 線 Colosseo 競技場站）。<br>
+              • <strong>終點位置</strong>：馬克西穆斯競技場（鄰近地鐵 B 線 Circo Massimo 站）。<br>
+              • <strong>兩地關聯</strong>：起點與終點僅相距約 1 公里，步行或搭乘一站地鐵即達。<br>
+              • <strong>賽日交通</strong>：比賽當日地鐵正常運行，建議賽前一小時抵達集結分區。
+            </p>
+            <div class="card-highlight">
+              起終點相近，賽前賽後集結動線極度緊湊流暢。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏨 住宿選址精準策略</div>
+            <p class="card-text">
+              • <strong>首選 A 區（競技場與蒙蒂區 Monti）</strong>：距離起終點最近，步行即可往返，巷弄充滿義式餐酒館。<br>
+              • <strong>首選 B 區（特米尼車站 Termini）</strong>：機場快線直達，拖行李最輕鬆，飯店選擇最多且性價比高。<br>
+              • <strong>老城區提醒</strong>：萬神殿周邊古風優雅，但皆為石板路，拖重行李移動較為費力。
+            </p>
+            <div class="card-highlight">
+              重裝行李跑者強烈推薦特米尼車站周邊飯店。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📦 Expo 領物與號碼布領取</div>
+            <p class="card-text">
+              • <strong>博覽會地點</strong>：羅馬展覽中心（Fiera di Roma）或官方指定會展中心。<br>
+              • <strong>領物時限</strong>：比賽前週五至週六連續兩天開放親領。<br>
+              • <strong>必備文件</strong>：攜帶護照正本與 ENDU 報名確認函領取物資包。<br>
+              • <strong>物資禮包</strong>：內含官方技術紀念跑衣、背包、號碼布與晶片。
+            </p>
+            <div class="card-highlight">
+              現場設有大型義大利運動品牌展與意麵派對。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏃 實戰準備 ｜ 裝備與補給</span>
+        <h2 class="slide-title">氣候數據、跑鞋選型與水站補給</h2>
+        <p class="slide-subtitle">地中海早春宜人氣候，強化緩震防滑應對歷史石磚路面</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">🌡️ 歷年氣候統計數據</div>
+            <p class="card-text">
+              • <strong>氣溫區間</strong>：9°C 至 17°C（早春微涼至溫暖舒適）。<br>
+              • <strong>降雨機率</strong>：地中海氣候，晴天居多，降雨機率約 20%。<br>
+              • <strong>日照情況</strong>：後半程接近中午日照增強，紫外線較為強烈。<br>
+              • <strong>起跑體感</strong>：上午 8:30 起跑約 10°C，短袖短褲體感極佳。
+            </p>
+            <div class="card-highlight">
+              春風和煦，被公認為歐洲春季最舒適的跑旅季節。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">👟 跑鞋挑選與防護策略</div>
+            <p class="card-text">
+              • <strong>跑鞋首選</strong>：強烈建議選用中底緩震充足、大底抓地橡膠優異之旗艦鞋款。<br>
+              • <strong>避雷提醒</strong>：切忌穿著大底極薄、過度追求極致輕量之鞋款，否則石板路震盪易造成足底筋膜疲勞。<br>
+              • <strong>防曬準備</strong>：佩戴透氣運動遮陽帽與太陽眼鏡，應對正午台伯河沿岸反射光。<br>
+              • <strong>腳踝支撐</strong>：行經石磚縫隙時保持重心穩定，避免大角度劇烈變向。
+            </p>
+            <div class="card-highlight">
+              優秀的緩震與濕地抓地力是征服羅馬的護身符。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🍵 大會補給與補水節奏</div>
+            <p class="card-text">
+              • <strong>水站設置</strong>：每 5 公里設有飲用水、電解質運動飲料站。<br>
+              • <strong>固態補給</strong>：後半程提供水果（香蕉、橘子）、餅乾與在地補給。<br>
+              • <strong>能量自備</strong>：建議隨身自備 3 至 4 條能量膠，於 10km、20km、30km 定時補充。<br>
+              • <strong>海綿站</strong>：賽道設有降溫海綿站，中午回暖時可擦拭降溫。
+            </p>
+            <div class="card-highlight">
+              充足補水搭配自備能量膠，穩步抵達競技場終點。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-source="[[羅馬馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🌸 賽後巡禮 ｜ 導航跳轉</span>
+        <h2 class="slide-title">賽後文化巡禮與系列下一站</h2>
+        <p class="slide-subtitle">戴上古羅馬浮雕獎牌，享用道地義式培根蛋麵與冰淇淋，啟航下一場阿爾卑斯挑戰</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">♨️ 完賽慶功與羅馬慢活漫步</div>
+              <p class="card-text">
+                • <strong>正統羅馬美食慶功</strong>：換上休閒裝走進蒙蒂區傳統小餐館，品嘗正宗羅馬乾酪胡椒義大利麵（Cacio e Pepe）與酥脆培根蛋麵（Carbonara）。<br>
+                • <strong>義式冰淇淋（Gelato）</strong>：賽後漫步至萬神殿旁的百年老店，用雙球開心果冰淇淋犒賞 42 公里的努力。<br>
+                • <strong>許願池與梵蒂岡散策</strong>：翌日前往特雷維噴泉投幣許願，悠閒漫步聖彼得廣場，動態排酸回味昨日奔馳。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🧭 知識圖譜雙向導航系統</div>
+              <p class="card-text">
+                告別永恆之城經典城市平路，下一站將帶您告別都市柏油，直面阿爾卑斯山千米垂直絕壁與萬年冰河挑戰！
+              </p>
+              <div class="jump-box">
+                <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="jump-btn">
+                  <span>🏠 返回總首頁索引</span>
+                  <span>➔</span>
+                </a>
+                <a href="少女峰馬拉松.html" class="jump-btn">
+                  <span>➡️ 下一站：瑞士少女峰馬拉松</span>
+                  <span>➔</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/rome_03.jpg" alt="義大利羅馬馬拉松 完賽風采" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>羅馬馬拉松古典完賽獎牌</strong>
+              <div class="image-fallback-text">圖片路徑：images/rome_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：馬克西穆斯競技場完賽獎牌 ｜ 榮耀刻印古羅馬浮雕</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[羅馬馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[羅馬馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

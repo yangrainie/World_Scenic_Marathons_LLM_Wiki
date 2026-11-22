@@ -1,0 +1,971 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>約旦佩特沙漠馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 玫瑰岩紅 (Rose Rock Red) */
+      --accent-color: #A8533D;
+      --accent-tint: #F8F0EE;
+      --accent-border: #E8C8C0;
+      --accent-highlight: #823A28;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.2rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+    }
+
+    /* Body Container */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      min-height: 0;
+    }
+
+    /* Cards System */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.85rem, 1.25vw, 1.25rem);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      line-height: 1.62;
+      flex: 1;
+    }
+
+    .card-text strong {
+      color: var(--ink-primary);
+    }
+
+    .card-highlight {
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-color);
+      border-left: 3px solid var(--accent-color);
+      font-weight: 500;
+    }
+
+    /* Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+
+    /* Split 2-Column Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(0.9rem, 1.6vw, 1.6rem);
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-text {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Image Display Container */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      height: 100%;
+      min-height: 220px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, #EBE8E1 100%);
+      color: var(--ink-secondary);
+      gap: 8px;
+    }
+
+    .image-fallback-icon {
+      font-size: 2.2rem;
+      opacity: 0.85;
+    }
+
+    .image-fallback-text {
+      font-size: 0.88rem;
+      color: var(--ink-tertiary);
+    }
+
+    .image-caption {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    /* Metrics Bar */
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.55rem;
+    }
+
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--ink-secondary);
+    }
+
+    .metric-chip strong {
+      color: var(--accent-color);
+      margin-left: 2px;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      border-top: 1px solid var(--border-color);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.2rem, 3.2vw, 3.2rem);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+
+    .nav-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd {
+      padding: 2px 6px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .traceability-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .traceability-pill strong {
+      color: var(--accent-color);
+    }
+
+    /* Jump Button in Slide 7 */
+    .jump-box {
+      margin-top: 0.65rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .jump-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--accent-tint);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .jump-btn:hover {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 900px) {
+      .grid-4, .grid-3, .split-layout { grid-template-columns: 1fr; }
+      .nav-tips { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck Container -->
+  <main class="slides-deck" id="deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏜️ 賽事名片 ｜ 玫瑰古城冒險</span>
+        <h1 class="slide-title">約旦佩特拉沙漠馬拉松 (Petra Desert Marathon)</h1>
+        <p class="slide-subtitle">世界新七大奇蹟 ｜ 清晨包場獨享千年神殿，在 40°C 烈日荒漠展開極限長征</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">📜 賽事定位與文明奇蹟</div>
+              <div class="metrics-row">
+                <span class="metric-chip">• UNESCO<strong>世界文化遺產</strong></span>
+                <span class="metric-chip">• 國際認證<strong>AIMS正式成員</strong></span>
+                <span class="metric-chip">• 爬升落差<strong>+1,297m</strong></span>
+                <span class="metric-chip">• 賽期<strong>每年 9 月初</strong></span>
+              </div>
+              <p class="card-text">
+                全球最頂級的古文明極限長跑賽事之一。賽事以聯合國教科文組織世界文化遺產——佩特拉「玫瑰紅城市」為核心，僅限約 200 名全球跑者於清晨獨享這座千年峽谷古城，穿梭於卡茲尼神殿、乾燥戈壁與灼熱山脊之間。
+              </p>
+              <div class="card-highlight">
+                印第安納瓊斯電影場景實地奔馳，耐力探險家一生的傳奇成就。
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🌟 三大核心特色摘要</div>
+              <p class="card-text">
+                • <strong>神殿朝陽起跑</strong>：清晨穿越 1.2km 蛇道巨石裂縫，在卡茲尼神殿前震撼鳴槍。<br>
+                • <strong>沙漠多變地形</strong>：細軟深沙、碎石戈壁、鬆散岩石與高山山脊頻繁交替。<br>
+                • <strong>高溫垂直魔王坡</strong>：正午氣溫直逼 40°C，迎戰長達 3 公里、爬升近 300m 的黑色陡坡。
+              </p>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/petra_01.jpg" alt="約旦佩特沙漠馬拉松 封面實景" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏛️</div>
+              <strong>卡茲尼神殿起跑晨光</strong>
+              <div class="image-fallback-text">圖片路徑：images/petra_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：卡茲尼神殿前鳴槍起跑 ｜ 玫瑰紅沙漠古文明殿堂</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">📋 規格認證 ｜ 基本資訊</span>
+        <h2 class="slide-title">賽事基本資訊與核心規格</h2>
+        <p class="slide-subtitle">嚴酷沙漠氣候與高低落差，對跑者耐熱與野外定向能力提出極限考驗</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">⏱️ 賽事時程與限時</div>
+            <p class="card-text">
+              • <strong>舉辦月份</strong>：每年 9 月初（固定賽期）。<br>
+              • <strong>關門限時</strong>：全馬 7 小時（半馬亦 7 小時）。<br>
+              • <strong>參賽規模</strong>：限量精緻約 200 名跑者。
+            </p>
+            <div class="card-highlight">
+              清晨 5:15 集結出發，盡量避開午後極端酷暑。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📈 累計爬升與下降</div>
+            <p class="card-text">
+              • <strong>累計爬升</strong>：+1,074m 至 +1,297m。<br>
+              • <strong>累計下降</strong>：-1,024 公尺以上。<br>
+              • <strong>地形趨勢</strong>：峽谷穿出、戈壁起伏至山脊攀升。
+            </p>
+            <div class="card-highlight">
+              垂直攀升劇烈，後段高溫爬坡體能消耗加倍。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏃 賽道地形與難度</div>
+            <p class="card-text">
+              • <strong>路面屬性</strong>：石板古道、軟沙、碎石與陡坡。<br>
+              • <strong>難度分級</strong>：極高（高溫沙漠越野）。<br>
+              • <strong>環境特點</strong>：乾燥無遮蔭荒原與強烈熱浪。
+            </p>
+            <div class="card-highlight">
+              鬆軟細沙每步洩力，需配戴專業防沙鞋套。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏅 國際組織權威認證</div>
+            <p class="card-text">
+              • <strong>國際認可</strong>：AIMS 國際長跑協會成員。<br>
+              • <strong>媒體評選</strong>：全球最值得期待的五場馬拉松。<br>
+              • <strong>賽事組別</strong>：42.195km 全馬組與 25km 半馬組。
+            </p>
+            <div class="card-highlight">
+              兼具古蹟保護與高規格國際越野賽事救援體系。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🗺️ 賽道路況 ｜ 魔王路段</span>
+        <h2 class="slide-title">賽道結構與關鍵魔王路段剖析</h2>
+        <p class="slide-subtitle">三大迥異賽段：幽暗蛇道出發、廣袤玫瑰戈壁與後段 31km 酷熱陡坡攻頂</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">🧭 三大地貌轉換階段</div>
+              <p class="card-text">
+                • <strong>階段一（0-6km 古城晨曦）</strong>：穿過 1.2km 蛇道裂縫，在卡茲尼神殿前出發，經過羅馬露天劇場與石窟柱廊大道。<br>
+                • <strong>階段二（6-31km 戈壁沙漠）</strong>：翻過小山進入廣袤沙漠，紅砂岩山脈隨日照轉化為金色與紅玫瑰色，偶遇貝都因牧羊人帳篷。<br>
+                • <strong>階段三（31-42.195km 山脊登頂）</strong>：頂著高溫攻上山脊，俯瞰奔馳過的沙漠全景與遠方以色列地平線，順坡衝線。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">⚠️ 魔王路段：31-34km 烈日黑色柏油大陡坡</div>
+              <p class="card-text">
+                • <strong>痛點剖析</strong>：通過 31km 後，在正午無遮蔽之 38°C~40°C 酷暑下，直面長達 3 公里、垂直爬升近 300 公尺（累計爬升近 500m）的黑色柏油路面。吸熱柏油讓地面溫度極高，體能極易瞬間枯竭。<br>
+                • <strong>通關策略</strong>：前 30 公里務必壓低配速保存體力，陡坡段切換為大步登山走，定時淋水降溫，抵達山頂遮陽補給站即見曙光。
+              </p>
+              <div class="card-highlight">
+                攻頂山脊後是一覽無遺的荒漠奇景，所有的艱辛化為榮耀！
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/petra_02.jpg" alt="約旦佩特沙漠馬拉松 路線圖" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗺️</div>
+              <strong>佩特拉沙漠賽道地貌圖</strong>
+              <div class="image-fallback-text">圖片路徑：images/petra_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：佩特拉沙漠馬拉松 42.195 公里穿越戈壁全圖</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🎫 資格門檻 ｜ 搶票攻略</span>
+        <h2 class="slide-title">報名機制與多日全包跑旅套裝</h2>
+        <p class="slide-subtitle">極致限額 200 名：官方綁定多日探索套裝，兼顧極限參賽與中東深度巡禮</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">🎲 1. 官方全包套裝模式</div>
+            <p class="card-text">
+              • <strong>參賽機制</strong>：不單獨販售單日號碼布。<br>
+              • <strong>套裝內容</strong>：包含賽事資格、安曼星級飯店、古城通行證、專車接駁與沙漠晚宴。<br>
+              • <strong>人數上限</strong>：嚴格限制約 200 名。<br>
+              • <strong>報名時程</strong>：出發前 90 天截止或額滿。
+            </p>
+            <div class="card-highlight">
+              一站式解決中東偏遠荒漠的交通與食宿難題。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏕️ 2. 瓦迪拉姆沙漠露營</div>
+            <p class="card-text">
+              • <strong>延伸套裝</strong>：夜宿「月亮谷」瓦迪拉姆紅沙營地。<br>
+              • <strong>特色體驗</strong>：乘坐 4x4 吉普車穿越奇岩峽谷。<br>
+              • <strong>文化盛宴</strong>：品嘗貝都因柴燒地燜烤肉（Zarb）與傳統紅茶。<br>
+              • <strong>星空銀河</strong>：無光害沙漠欣賞震撼銀河星空。
+            </p>
+            <div class="card-highlight">
+              火星救援與阿拉伯的勞倫斯經典取景地。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🌊 3. 死海與瓦迪穆吉溯溪</div>
+            <p class="card-text">
+              • <strong>死海漂浮</strong>：造訪陸地最低點，體驗無重力漂浮。<br>
+              • <strong>穆吉峽谷</strong>：世界最低溪流峽谷，水流攀爬瀑布排酸。<br>
+              • <strong>傑拉什古城</strong>：參訪中東龐貝古城，保存最完整羅馬柱廊。<br>
+              • <strong>自然保護區</strong>：邂逅努比亞頁羊等稀有沙漠物種。
+            </p>
+            <div class="card-highlight">
+              賽後極佳的動態排酸與水域清涼舒緩之旅。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">✈️ 4. 安曼國際機場接送</div>
+            <p class="card-text">
+              • <strong>接送安排</strong>：大會提供 Queen Alia 機場定點專車。<br>
+              • <strong>行前說明會</strong>：賽前一日舉行深度賽道路況勘查說明。<br>
+              • <strong>年齡限制</strong>：全馬需滿 18 歲，25km 組需滿 16 歲。<br>
+              • <strong>保險要求</strong>：建議購買含海外緊急醫療之後勤保險。
+            </p>
+            <div class="card-highlight">
+              國際冒險旅行機構 Albatros 嚴密安全把關。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🚆 後勤物流 ｜ 起終點動線</span>
+        <h2 class="slide-title">荒漠後勤物流、住宿安排與領物</h2>
+        <p class="slide-subtitle">清晨 5:15 佩特拉遊客中心集合：徒步蛇道進城與終點營地接駁</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">📍 起終點交通與晨間徒步</div>
+            <p class="card-text">
+              • <strong>清晨集結</strong>：5:15 於佩特拉遊客中心集合，由工作人員整隊出發。<br>
+              • <strong>暗夜進城</strong>：集體徒步 2 公里進入古城，其中 1.2 公里穿過漆黑安靜的西克蛇道。<br>
+              • <strong>終點位置</strong>：設於沙漠出口營地，完賽後搭乘大會專屬空調巴士返回飯店。<br>
+              • <strong>無信號警告</strong>：沙漠賽道深處手機完全無信號，賽事全程由巡邏吉普車戒護。
+            </p>
+            <div class="card-highlight">
+              黎明時分走出蛇道見到神殿的剎那，畢生難忘。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏨 住宿選址與小鎮基地</div>
+            <p class="card-text">
+              • <strong>基地小鎮</strong>：瓦迪穆薩（Wadi Musa），環抱佩特拉古城入口的山城小鎮。<br>
+              • <strong>飯店等級</strong>：官方套裝通常配置優質四星至五星級沙漠景觀飯店（如 Mövenpick 或同級）。<br>
+              • <strong>生活機能</strong>：小鎮設有換匯點、傳統阿拉伯餐廳與藥局，賽前物資補給便利。<br>
+              • <strong>充足睡眠</strong>：賽日前晚需提早就寢，以應對清晨 4:00 起床的極早作息。
+            </p>
+            <div class="card-highlight">
+              飯店大多提供賽日清晨外帶早餐盒服務。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📦 Expo 物資領取與行李寄存</div>
+            <p class="card-text">
+              • <strong>領物流程</strong>：抵達約旦安曼或瓦迪穆薩飯店時統一發放物資。<br>
+              • <strong>物資禮包</strong>：官方沙漠透氣紀念跑衣、號碼布、計時晶片與防風保暖毯。<br>
+              • <strong>賽日寄物</strong>：起跑前可將完賽乾淨衣物交給大會卡車，直接運送至終點營地。<br>
+              • <strong>防砂檢查</strong>：賽前簡報會展示防沙套正確綁法，確保裝備妥當。
+            </p>
+            <div class="card-highlight">
+              終點帳篷備有冰涼濕毛巾與冷飲供跑者迅速降溫。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏃 實戰準備 ｜ 裝備與補給</span>
+        <h2 class="slide-title">沙漠極端環境應對、防沙裝備與補給</h2>
+        <p class="slide-subtitle">起跑 22°C 至正午 40°C 的溫差考驗：防沙套、水袋包與全程 14 處水站</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">🌡️ 沙漠極端氣候數據</div>
+            <p class="card-text">
+              • <strong>氣溫變化</strong>：清晨起跑約 22°C 涼爽，午前沙漠快速升溫至 38°C~40°C。<br>
+              • <strong>濕度水平</strong>：空氣極度乾燥，汗水瞬間蒸發，容易讓人忽視水分流失。<br>
+              • <strong>日照曝曬</strong>：荒漠毫無樹木遮蔭，紫外線極為強烈。<br>
+              • <strong>風沙特點</strong>：午後偶有乾燥陣風揚起細沙，需護目防風。
+            </p>
+            <div class="card-highlight">
+              高溫低濕環境下，口渴前就必須主動補水與補鹽。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">👟 專業防沙裝備與跑鞋挑選</div>
+            <p class="card-text">
+              • <strong>防沙鞋套（Gaiters）</strong>：必備裝備！魔鬼氈固定於鞋緣，防止細砂石磨破腳皮。<br>
+              • <strong>跑鞋推薦</strong>：選擇深齒紋大底、鞋面密織防砂之長距離越野跑鞋或厚底鞋款。<br>
+              • <strong>水袋背包</strong>：強制建議攜帶 1.5L 至 2L 水袋包或雙前置軟水壺。<br>
+              • <strong>防曬三件套</strong>：抗 UV 鬼蝠式防曬帽（護頸）、偏光太陽眼鏡、高係數防曬乳。
+            </p>
+            <div class="card-highlight">
+              雙腳無砂粒磨損，是順利完成 42km 沙漠的關鍵。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🍵 大會 14 處水站與補水節奏</div>
+            <p class="card-text">
+              • <strong>水站密度</strong>：全程密集設有多達 14 處補給水站，提供瓶裝水與電解質飲料。<br>
+              • <strong>降溫海綿</strong>：高溫站點提供冰涼浸泡水桶與海綿供跑者全身沖淋降溫。<br>
+              • <strong>鹽錠戰術</strong>：大量流汗易導致低血鈉症，建議每 45-60 分鐘服用 1 顆高濃度鹽錠。<br>
+              • <strong>固態補給</strong>：自備能量膠 5-6 條，搭配大會水果保持血糖穩定。
+            </p>
+            <div class="card-highlight">
+              每過一個水站務必補滿隨身水壺，切勿空壺前進。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-source="[[約旦佩特沙漠馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🌸 賽後巡禮 ｜ 導航跳轉</span>
+        <h2 class="slide-title">賽後文化巡禮與系列下一站</h2>
+        <p class="slide-subtitle">戴上古城刻紋獎牌，死海漂浮放鬆四頭肌，啟航前往加州一號懸崖公路</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">♨️ 完賽慶功與約旦深度探險</div>
+              <p class="card-text">
+                • <strong>死海無重力漂浮</strong>：賽後驅車前往死海，浸泡在富含礦物質的高鹽度湖水中，全身零重力漂浮排酸，塗抹黑泥滋養肌膚。<br>
+                • <strong>瓦迪拉姆沙漠慶功營火</strong>：夜宿貝都因特色帳篷，與來自全球的勇者圍坐營火，分享烈日陡坡的征服故事。<br>
+                • <strong>代爾修道院隱密步道</strong>：賽後以輕鬆徒步從小佩特拉翻山進入古城，登上山頂茶亭遠眺約旦最雄偉峽谷日落。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🧭 知識圖譜雙向導航系統</div>
+              <p class="card-text">
+                征服中東沙漠酷熱後，下一站將帶您跨越太平洋，奔赴加州一號公路險峻懸崖與比克斯比大橋琴聲！
+              </p>
+              <div class="jump-box">
+                <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="jump-btn">
+                  <span>🏠 返回總首頁索引</span>
+                  <span>➔</span>
+                </a>
+                <a href="美國大瑟爾國際馬拉松.html" class="jump-btn">
+                  <span>➡️ 下一站：美國大瑟爾國際馬拉松</span>
+                  <span>➔</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/petra_03.jpg" alt="約旦佩特沙漠馬拉松 完賽風采" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>佩特拉沙漠馬拉松完賽獎牌</strong>
+              <div class="image-fallback-text">圖片路徑：images/petra_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：沙漠營地完賽獎牌 ｜ 玫瑰古城極限征服者的榮耀印記</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[約旦佩特沙漠馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[約旦佩特沙漠馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

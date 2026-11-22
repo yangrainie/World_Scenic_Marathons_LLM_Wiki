@@ -1,0 +1,1166 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紐西蘭皇后鎮馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 高山湖水青 (Alpine Lake Cyan) */
+      --accent-color: #386B68;
+      --accent-tint: #ECF3F2;
+      --accent-border: #BDD8D6;
+      --accent-highlight: #254E4B;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+      line-height: 1.22;
+      margin-bottom: 0.25rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+      font-weight: 400;
+    }
+
+    /* Content Layouts */
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      justify-content: center;
+      justify-content: safe center;
+    }
+
+    /* Split Layout: Content + Image */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.22fr 0.98fr;
+      gap: clamp(1rem, 2vw, 1.6rem);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .notion-card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-list li {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Grid Layouts */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(0.65rem, 1.1vw, 1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.75rem, 1.2vw, 1.1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* Cards */
+    .notion-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.75rem, 1.25vw, 1.15rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .notion-card.featured {
+      border-left: 4px solid var(--accent-color);
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--accent-tint) 100%);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: clamp(0.35rem, 0.6vw, 0.55rem);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.35rem;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-tag {
+      font-size: clamp(0.82rem, 0.95vw, 0.9rem);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--card-bg-subtle);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.32rem;
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      overflow-y: auto;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .card-list li {
+      position: relative;
+      padding-left: 14px;
+      line-height: 1.48;
+    }
+    .card-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+    .card-list strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .card-highlight {
+      margin-top: 0.35rem;
+      padding: 6px 10px;
+      background: var(--accent-tint);
+      border: 1px dashed var(--accent-border);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-highlight);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Metric Chips */
+    .metric-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+    .metric-chip {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    /* Image Display Panel */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+      min-height: 0;
+    }
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      flex: 1;
+      min-height: 0;
+    }
+    .image-fallback {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, var(--accent-tint) 100%);
+      padding: 1.5rem;
+      text-align: center;
+      border: 2px dashed var(--accent-border);
+      border-radius: var(--radius-md);
+      margin: 8px;
+    }
+    .image-fallback-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent-color);
+    }
+    .image-fallback strong {
+      font-size: 1.05rem;
+      color: var(--ink-primary);
+      margin-bottom: 0.3rem;
+    }
+    .image-fallback-text {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+    }
+    .image-caption {
+      padding: 8px 14px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.84rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 3vw, 2.5rem);
+      z-index: 90;
+      flex-shrink: 0;
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border-color: var(--accent-border);
+    }
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kbd {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .btn-next-race {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--accent-color);
+      border: 1px solid var(--accent-highlight);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+    .btn-next-race:hover {
+      background: var(--accent-highlight);
+      transform: translateY(-1px);
+    }
+
+    .traceability-pill {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+    .traceability-pill strong {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .split-layout { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .image-panel { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck -->
+  <main class="slides-deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-slide="1" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🏔️ 賽事名片與封面</div>
+        <h1 class="slide-title">紐西蘭皇后鎮馬拉松 (Queenstown Marathon)</h1>
+        <div class="slide-subtitle">世界上最美麗的馬拉松，穿梭於高山湖泊與卓越山脈的南半球純淨跑旅</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🏃 賽事基本定位</span>
+                <span class="card-tag">南島名賽</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>全球美譽</strong>：被國際公認為「世界上最美麗的馬拉松」，紐西蘭南島指標路跑</li>
+                  <li><strong>權威認證</strong>：AIMS 認證點對點賽道，成績獲波士頓馬拉松（BQ）資格賽採計</li>
+                  <li><strong>參賽規模</strong>：總人數逾 13,000 人（全馬約 4,000 人），海外國際跑者達 38%</li>
+                  <li><strong>地理環境</strong>：紐西蘭南島中央奧塔哥皇后鎮湖區，環抱瓦卡蒂普湖與卓越山脈</li>
+                  <li><strong>賽道地貌</strong>：約 70% 平整硬質碎石步道與自行車道，30% 為平整柏油公路</li>
+                </ul>
+                <div class="metric-chip-row">
+                  <span class="metric-chip">AIMS/BQ 認證</span>
+                  <span class="metric-chip">70% 碎石步道</span>
+                  <span class="metric-chip">國際跑者 38%</span>
+                </div>
+              </div>
+              <div class="card-highlight">
+                AIMS 與 BQ 雙認證 ｜ 世界上最美麗的高山湖泊賽道
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🌍 跑旅核心精神</span>
+                <span class="card-tag">純淨荒野</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>純淨絕景</strong>：穿梭魔戒取景地壯麗山谷、金礦小鎮箭鎮與藍寶石般的海耶斯湖</li>
+                  <li><strong>淨下坡特質</strong>：起點 410m 降至終點 319m（淨下降約 91m），暗藏坡度起伏考驗</li>
+                  <li><strong>嘉年華終點</strong>：終點設於皇后鎮休閒公園，草地音樂會、餐車與精釀啤酒同歡</li>
+                  <li><strong>包容親民</strong>：全馬關門限時長達 7 小時 45 分，步進行者（Walkers）亦受熱烈歡迎</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                湖光山色盡收眼底 ｜ 考驗配速智慧與下坡控腿技巧的純淨饗宴
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/queenstown_01.jpg" alt="紐西蘭皇后鎮馬拉松 高山湖泊與雪山賽道" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏔️</div>
+              <strong>瓦卡蒂普湖與卓越山脈</strong>
+              <div class="image-fallback-text">圖片路徑：images/queenstown_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：海耶斯湖與卓越山脈 ｜ 跑者奔馳於南半球純淨如鏡的高山湖畔</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-slide="2" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">📋 賽事基本資訊</div>
+        <h1 class="slide-title">競賽規程與規格矩陣</h1>
+        <div class="slide-subtitle">每年 11 月中旬開跑，點對點淨下降賽道與 7 小時 45 分寬裕限時</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⏱️ 舉辦時程與組別</span>
+              <span class="card-tag">超長關門</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>舉辦時間</strong>：每年 11 月中旬星期六（例如 2026 年 11 月 14 日）</li>
+                <li><strong>全程馬拉松</strong>：08:45 AM 起跑，起點米爾布魯克渡假村（Millbrook）</li>
+                <li><strong>半程馬拉松</strong>：08:00 AM 起跑，起點瓦卡蒂普盆地（最熱門組別）</li>
+                <li><strong>短程組別</strong>：10K 路跑（07:30 AM）、兒童跑 2.2K（01:00 PM）</li>
+                <li><strong>關門時限</strong>：終點於下午 04:30 關門，全馬限時長達 7 小時 45 分</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">全馬限時 7h45m</span>
+                <span class="metric-chip">四大參賽組別</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛰️ 垂直爬升與海拔</span>
+              <span class="card-tag">淨下降賽道</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>起終點海拔</strong>：起點 410 公尺、終點 319 公尺，全線淨下降約 91 公尺</li>
+                <li><strong>累積爬升</strong>：總爬升約在 120 至 350 公尺之間，集中於前半程 24 公里</li>
+                <li><strong>後半程平坦</strong>：26 km 至終點高度差僅 13 公尺，沿湖畔平穩前行</li>
+                <li><strong>淨下坡陷阱</strong>：前段連續下降對股四頭肌造成離心衝擊，切忌過早暴衝</li>
+                <li><strong>關鍵爬坡</strong>：18~21 km Slope Hill 面臨全程最長 45m 陡坡，須控速爬升</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">淨降 91m</span>
+                <span class="metric-chip">集中前半程爬升</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌲 賽道地貌與補給</span>
+              <span class="card-tag">70% 碎石路</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>步道地質</strong>：70% 為平整硬質碎石步道，標準公路跑鞋即可舒適駕馭</li>
+                <li><strong>景觀串聯</strong>：米爾布魯克大道、箭鎮街區、箭河步道、海耶斯湖、沙特歐瓦河</li>
+                <li><strong>水站配置</strong>：全馬設 11 座補給站（約每 4 km 一座），供應純水與電解質</li>
+                <li><strong>特色飲品</strong>：31 km 設 Red Bull 站，後段第 8~11 站提供去氣可樂補糖</li>
+                <li><strong>人車管制</strong>：步道與公路實施分流封閉管制，志工於關鍵路口全程引導</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">11 座水站</span>
+                <span class="metric-chip">去氣可樂補給</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🏆 競賽規範與認證</span>
+              <span class="card-tag">BQ 資格採計</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>國際認可</strong>：AIMS 賽道認證，成績可作為波士頓馬拉松（BQ）資格證明</li>
+                <li><strong>晶片計時</strong>：號碼布背貼式單次感應晶片，採 Mat-to-Mat 淨時間計時</li>
+                <li><strong>官方獎金</strong>：男女性總排名前三名頒發槍響時間獎金（第一名 NZ$3,000）</li>
+                <li><strong>載具限制</strong>：嚴禁使用輪椅、推車、直排輪、自行車或攜帶寵物參賽</li>
+                <li><strong>健走友好</strong>：全馬與半馬歡迎步進行者（Walkers），起跑排於後方分區</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">BQ 認可賽事</span>
+                <span class="metric-chip">步進選手友好</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-slide="3" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">⚡ 賽道結構與魔王路段</div>
+        <h1 class="slide-title">Slope Hill 陡升與沙特歐瓦河碎石急降</h1>
+        <div class="slide-subtitle">突破 18 至 21 公里關鍵爬坡，應對 24 公里陡峭下坡的股四頭肌考驗</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🗺️ 賽道分段結構剖析</span>
+                <span class="card-tag">全馬 42.2 km</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>渡假村至箭鎮（0~8 km）</strong>：綠蔭大道出發穿過歷史金礦小鎮，沿箭河平緩下坡</li>
+                  <li><strong>海耶斯湖環湖（9~17 km）</strong>：下衝 38 公尺進入湖區，順時針飽覽雪山倒影</li>
+                  <li><strong>Slope Hill 陡坡（18~21 km）</strong>：面臨全程最長且持續爬升，陡升約 45 公尺</li>
+                  <li><strong>沙特歐瓦河急降（24~26 km）</strong>：由碎石步道急降 55 公尺直衝河谷，穿越老鐵橋</li>
+                  <li><strong>湖畔平坦最後衝刺（26~42.2 km）</strong>：沿雙河與 Frankton 步道平緩前行衝進皇后鎮公園</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                穿梭金礦小鎮與雪山湖泊 ｜ 宛如置身魔戒中土世界的夢幻風景
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🛑 魔王路段：Slope Hill 與淨下坡陷阱</span>
+                <span class="card-tag">肌肉衝擊</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>關鍵爬坡（18~21 km）</strong>：Slope Hill 連續陡升，務必依體感心率放緩配速，切忌硬拉</li>
+                  <li><strong>離心衝擊急降（24~26 km）</strong>：碎石路面急降 55 公尺，股四頭肌承受強烈離心負荷</li>
+                  <li><strong>淨下坡體能崩盤點</strong>：許多跑者前段過快衝刺，在 30~35 km（Frankton 區間）面臨撞牆</li>
+                  <li><strong>檢查點關門時限</strong>：Lake Hayes（11 km / 11:10）、Spence Rd（26.3 km / 13:45）、Frankton（32 km / 14:40）</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                控速下坡防肌纖維撕裂 ｜ Slope Hill 主動降速保留體能給最後 16km
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/queenstown_02.png" alt="紐西蘭皇后鎮馬拉松 Slope Hill 與碎石賽道" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏃</div>
+              <strong>湖畔步道與 Slope Hill 賽道</strong>
+              <div class="image-fallback-text">圖片路徑：images/queenstown_02.png</div>
+            </div>
+            <div class="image-caption">圖 2：湖畔硬質碎石步道 ｜ 跑者穿梭於瓦卡蒂普湖畔與金黃柳樹林蔭間</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-slide="4" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎟️ 報名資格與搶票攻略</div>
+        <h1 class="slide-title">預約梯次報名與組別轉換機制</h1>
+        <div class="slide-subtitle">每年春季開放線上註冊，額滿預警與點對點接駁車票加購</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌐 官方線上報名流程</span>
+              <span class="card-tag">線上註冊</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>報名平台</strong>：透過皇后鎮馬拉松官方網站註冊（Active 系統）</li>
+                <li><strong>額滿預警</strong>：半馬與全馬熱門組別通常於賽前數月即全數額滿</li>
+                <li><strong>報名費用</strong>：全馬 NZ$277、半馬 NZ$204、10K NZ$136、兒童跑 NZ$58</li>
+                <li><strong>組別轉換</strong>：可在官方截止日前線上申請轉組（如全馬轉半馬）補退差額</li>
+                <li><strong>年齡規範</strong>：全馬須滿 18 歲，半馬須滿 16 歲，10K 須滿 10 歲</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">全馬 NZ$277</span>
+                <span class="metric-chip">支援線上轉組</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🚌 官方起點接駁車加購</span>
+              <span class="card-tag">點對點必備</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>接駁必要性</strong>：起終點不同且起點無公眾停車位，強烈建議加購車票</li>
+                <li><strong>全馬接駁車</strong>：票價 NZ$20，清晨 07:00~07:35 於市區 Boundary St 發車</li>
+                <li><strong>Frankton 點</strong>：亦可在 Frankton Wakatipu 高中登車（07:20~07:30）</li>
+                <li><strong>購票管道</strong>：報名時勾選或賽前登入帳戶加購，領物時領取乘車標籤</li>
+                <li><strong>乘車驗證</strong>：憑號碼布上的 Shuttles 圖示或專屬貼紙登車直達起點</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">接駁票 NZ$20</span>
+                <span class="metric-chip">直達起點渡假村</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📝 Expo 博覽會報到</span>
+              <span class="card-tag">賽前領取</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>領物地點</strong>：皇后鎮賽事中心（Queenstown Events Centre，近機場）</li>
+                <li><strong>開放時間</strong>：週四 12:00~19:00、週五 10:00~20:00，比賽當天不開放</li>
+                <li><strong>必備文件</strong>：攜帶含照片證件（護照）與確認信 Email（QR Code）</li>
+                <li><strong>物資內容</strong>：號碼布（背貼晶片）、官方專用寄物袋與賽事手冊</li>
+                <li><strong>公車直達</strong>：搭乘 Orbus 1 號公車（持 Bee Card 僅 NZ$2.50）直達展覽館</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">賽前兩天領物</span>
+                <span class="metric-chip">Events Centre</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📦 官方寄物袋託運規範</span>
+              <span class="card-tag">衣物托運</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>專用寄物袋</strong>：僅限使用官方抽繩寄物袋並貼標籤，拒收個人大背包</li>
+                <li><strong>起點托運</strong>：起點設有衣物托運卡車，開賽前 20 分鐘停止收件</li>
+                <li><strong>終點領取</strong>：寄物袋運送至皇后鎮紀念中心（Memorial Centre）領取</li>
+                <li><strong>開放時間</strong>：全馬專區於上午 11:00 開放，須於下午 04:30 前領畢</li>
+                <li><strong>舊衣回收</strong>：起跑前可穿著舊外套防風禦寒，起跑丟棄衣物統一捐贈</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">專用抽繩袋</span>
+                <span class="metric-chip">紀念中心領取</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-slide="5" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🚗 交通住宿與領物寄物</div>
+        <h1 class="slide-title">皇后鎮住宿分佈、公車路網與終點物流</h1>
+        <div class="slide-subtitle">皇后鎮市中心與 Frankton 住宿比較，Orbus 公車卡與賽後步行動線</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🏨 皇后鎮住宿區域權衡</span>
+              <span class="card-tag">住宿規劃</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>市中心（CBD）</strong>：步行可達終點與接駁車發車點，賽後回房最輕鬆，房價較高</li>
+                <li><strong>Frankton 湖區</strong>：鄰近機場與 Expo 會場，房價較平易，有高中接駁乘車點</li>
+                <li><strong>提前預訂預警</strong>：賽事週全鎮湧入萬名跑者，建議提前 6 至 9 個月預訂住宿</li>
+                <li><strong>公寓房型首選</strong>：推薦預訂含廚房的公寓飯店（Apartment），便於賽前自煮肝醣</li>
+                <li><strong>水上渡輪</strong>：可搭乘 Queenstown Ferry 往返 Hilton、Frankton 與市中心碼頭</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              市中心步行即可抵達終點 ｜ 建議提前半年預訂住宿
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🚌 在地交通：Orbus 與 Bee Card</span>
+              <span class="card-tag">廉價便利</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>公車網絡</strong>：Orbus 公車系統串聯機場、市中心、Frankton 與 Expo 會場</li>
+                <li><strong>Bee Card 票卡</strong>：機場或便利店購買 Bee Card，刷卡單趟僅需 NZ$2.50</li>
+                <li><strong>機場接駁</strong>：搭乘 1 號公車每 15 分鐘一班，約 20 分鐘直達皇后鎮市中心</li>
+                <li><strong>賽後渡輪</strong>：搭乘 Queenstown Ferry 穿梭瓦卡蒂普湖，放鬆欣賞湖光倒影</li>
+                <li><strong>右駕自駕提醒</strong>：紐西蘭為右駕左行，比賽當日多處封路，市區車位極短缺</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              必備 Bee Card 交通卡 ｜ Orbus 串聯機場、展覽館與市區
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🏟️ 終點嘉年華與退場物流</span>
+              <span class="card-tag">湖畔慶祝</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>終點動線</strong>：衝過休閒公園終點線，領取完賽獎牌、電解質、新鮮蘋果與保暖鋁箔</li>
+                <li><strong>寄物領取</strong>：步行 3 分鐘至皇后鎮紀念中心（Memorial Centre）憑號碼布領包</li>
+                <li><strong>草地派對</strong>：公園大草坪設有現場樂隊演出、餐車市集、精釀啤酒與按摩帳篷</li>
+                <li><strong>天然冷療</strong>：許多跑者漫步至瓦卡蒂普湖進行冰冷湖水浸泡，促進血液循環</li>
+                <li><strong>悠閒返宿</strong>：市中心住宿跑者可慢步返回飯店，免除長途轉乘舟車勞頓</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              終點草坪音樂嘉年華 ｜ 瓦卡蒂普湖天然冰水冷療放鬆
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-slide="6" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎒 跑步裝備、補給與氣候應變</div>
+        <h1 class="slide-title">碎石混合跑鞋、春末溫差與下坡離心對策</h1>
+        <div class="slide-subtitle">應對早晨 4°C 至午後 18°C 溫差，高吸濕防沙跑襪與定時咖啡因補給</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛅ 11 月春末氣候與溫差</span>
+              <span class="card-tag">溫差 14°C</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>劇烈溫差</strong>：清晨起跑時約 4°C~8°C（偶有霜凍），午後陽光直射可升至 18°C</li>
+                <li><strong>陣風與乾爽</strong>：11 月為陣風較大月份，空氣清爽乾燥，體感舒適但水分蒸發快</li>
+                <li><strong>高係數防曬</strong>：南半球紫外線極強，必備 SPF 50+ 防水防曬乳與抗 UV 太陽眼鏡</li>
+                <li><strong>洋蔥式穿搭</strong>：起跑前穿著拋棄式舊外套保暖，起跑後投入回收箱，短袖配袖套為佳</li>
+                <li><strong>定時補水</strong>：乾燥環境汗水蒸發迅速，即使不覺口渴亦須每站小口定時補水</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              清晨霜凍午後微熱 ｜ 必備 SPF 50+ 防曬與起跑禦寒層
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">👟 跑鞋挑選與防磨配置</span>
+              <span class="card-tag">公路跑鞋</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>跑鞋推薦</strong>：70% 為平整硬質碎石路，標準公路跑鞋或輕量競速鞋即可完美勝任</li>
+                <li><strong>無須重裝越野</strong>：步道平整度高，深齒痕越野跑鞋反而增加不必要的重量與負擔</li>
+                <li><strong>防磨細密跑襪</strong>：碎石步道偶有細微碎沙微粒，穿著高筒排汗防磨跑襪以防起泡</li>
+                <li><strong>股四頭抗衝擊</strong>：賽前加入下坡控速離心訓練，穿戴壓縮腿套減緩下坡肌肉震顫</li>
+                <li><strong>防磨膏塗抹</strong>：大腿內側、腋下與腳趾塗抹防磨膏，應對長時間乾燥摩擦</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              標準公路鞋即可勝任 ｜ 穿著高防磨跑襪與壓縮腿套
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🍌 賽道補給與自備策略</span>
+              <span class="card-tag">去氣可樂</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>官方水站</strong>：全馬設 11 座水站（約每 4 km 一座），供應純水與 PURE 檸檬電解質</li>
+                <li><strong>特色能量站</strong>：31 km 設 Red Bull 站；後段 8~11 站提供去氣可樂快速補糖</li>
+                <li><strong>自備能量膠</strong>：建議隨身自備 5~6 包習慣品牌能量膠，每 35~40 分鐘固定補給</li>
+                <li><strong>鹽錠電解質</strong>：空氣乾燥易忽視排汗量，每小時搭配補水補充一顆電解質鹽錠</li>
+                <li><strong>30 km 臨界點</strong>：進入 Frankton 湖畔平緩區前補足糖分，維持平穩巡航步頻</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              後段去氣可樂快速提神 ｜ 自備能量膠每 40 分鐘補給
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-slide="7" data-source="[[紐西蘭皇后鎮馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🗺️ 賽後觀光與跳轉導航</div>
+        <h1 class="slide-title">冒險之都極限體驗與最終站富士山</h1>
+        <div class="slide-subtitle">纜車登頂眺望卓越山脈、米佛峽灣巡禮與 12 場賽事完結篇</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🌟 皇后鎮冒險與自然巡禮</span>
+                <span class="card-tag">冒險之都</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>天際線纜車（Skyline）</strong>：搭乘纜車登鮑伯峰（Bob's Peak），俯瞰 220 度高山湖景</li>
+                  <li><strong>百年蒸氣船巡航</strong>：搭乘 TSS 厄恩斯勞號穿梭瓦卡蒂普湖，造訪高地牧場農莊</li>
+                  <li><strong>米佛峽灣（Milford Sound）</strong>：世界第八大自然奇景，賽後搭乘觀光巴士深入冰河峽灣</li>
+                  <li><strong>箭鎮淘金小鎮漫步</strong>：賽後悠閒重訪箭鎮，在歷史林蔭街區享用紐西蘭肉派與咖啡</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                鮑伯峰 220 度湖景 ｜ 乘百年蒸氣船巡航純淨南半球淨土
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🧭 賽事跳轉導航</span>
+                <span class="card-tag">最終站導航</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>下一站賽事</strong>：[[日本富士山]]（富士山馬拉松，富士五湖楓紅與聖山倒影最終完結篇）</li>
+                  <li><strong>賽事主題</strong>：世界遺產與自然荒野賽道之壓軸最終站</li>
+                  <li><strong>總索引回訪</strong>：隨時返回首頁索引查看 12 場賽事矩陣與知識圖譜</li>
+                </ul>
+                <div style="display: flex; gap: 10px; margin-top: 0.6rem;">
+                  <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home">
+                    🏠 返回總首頁索引
+                  </a>
+                  <a href="日本富士山.html" class="btn-next-race">
+                    ➡️ 下一站：日本富士山馬拉松
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/queenstown_03.jpg" alt="紐西蘭皇后鎮馬拉松 完賽獎牌與休閒公園嘉年華" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>皇后鎮馬拉松完賽獎牌</strong>
+              <div class="image-fallback-text">圖片路徑：images/queenstown_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：純淨雪山完賽獎牌 ｜ 刻劃卓越山脈輪廓的南島最美馬拉松榮耀</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[紐西蘭皇后鎮馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[紐西蘭皇后鎮馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,968 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>瑞士少女峰馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 冰河藍 (Glacier Blue) */
+      --accent-color: #4A6B82;
+      --accent-tint: #EFF3F6;
+      --accent-border: #C6D5DF;
+      --accent-highlight: #344F63;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.2rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+    }
+
+    /* Body Container */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      min-height: 0;
+    }
+
+    /* Cards System */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.85rem, 1.25vw, 1.25rem);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      line-height: 1.62;
+      flex: 1;
+    }
+
+    .card-text strong {
+      color: var(--ink-primary);
+    }
+
+    .card-highlight {
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-color);
+      border-left: 3px solid var(--accent-color);
+      font-weight: 500;
+    }
+
+    /* Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+
+    /* Split 2-Column Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(0.9rem, 1.6vw, 1.6rem);
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-text {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Image Display Container */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      height: 100%;
+      min-height: 220px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, #EBE8E1 100%);
+      color: var(--ink-secondary);
+      gap: 8px;
+    }
+
+    .image-fallback-icon {
+      font-size: 2.2rem;
+      opacity: 0.85;
+    }
+
+    .image-fallback-text {
+      font-size: 0.88rem;
+      color: var(--ink-tertiary);
+    }
+
+    .image-caption {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    /* Metrics Bar */
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.55rem;
+    }
+
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--ink-secondary);
+    }
+
+    .metric-chip strong {
+      color: var(--accent-color);
+      margin-left: 2px;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      border-top: 1px solid var(--border-color);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.2rem, 3.2vw, 3.2rem);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+
+    .nav-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd {
+      padding: 2px 6px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .traceability-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .traceability-pill strong {
+      color: var(--accent-color);
+    }
+
+    /* Jump Button in Slide 7 */
+    .jump-box {
+      margin-top: 0.65rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .jump-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--accent-tint);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .jump-btn:hover {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 900px) {
+      .grid-4, .grid-3, .split-layout { grid-template-columns: 1fr; }
+      .nav-tips { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck Container -->
+  <main class="slides-deck" id="deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">⛰️ 賽事名片 ｜ 離天堂最近的馬拉松</span>
+        <h1 class="slide-title">瑞士少女峰馬拉松 (Jungfrau-Marathon)</h1>
+        <p class="slide-subtitle">世界最美麗的越野馬拉松 ｜ 直面艾格峰、僧侶峰與少女峰萬年冰河之巔</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">📜 賽事定位與阿爾卑斯傳奇</div>
+              <div class="metrics-row">
+                <span class="metric-chip">• 累積爬升<strong>+1,953m</strong></span>
+                <span class="metric-chip">• 終點海拔<strong>2,320m</strong></span>
+                <span class="metric-chip">• 參賽限額<strong>4,000人</strong></span>
+                <span class="metric-chip">• 賽期<strong>每年 9 月初</strong></span>
+              </div>
+              <p class="card-text">
+                全球知名度最高的山岳馬拉松之一。賽事從因特拉肯小鎮（海拔 566m）起跑，沿著碧綠湖岸緩升進入瀑布山谷，後半段直攀阿爾卑斯巨峰陵線，最終抵達艾格冰河站（海拔 2,320m），將純淨高山景觀與極限耐力挑戰融為一體。
+              </p>
+              <div class="card-highlight">
+                從人間碧湖一路奔向萬年冰河天際線，山岳跑者一生的終極夢想清單。
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🌟 三大核心特色摘要</div>
+              <p class="card-text">
+                • <strong>極致爬升跨度</strong>：垂直爬升近 2,000 公尺，後半程 17km 陡升逾千米。<br>
+                • <strong>溫根壁（Wengen Wall）考驗</strong>：陡峭髮夾彎山徑，考驗雙腿登山步頻與心肺耐力。<br>
+                • <strong>終點冰河慶典</strong>：在海拔 2,320m 艾格冰河巨壁前，聆聽阿爾卑斯長號、品嘗瑞士熱起司通心粉。
+              </p>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/jungfrau_01.jpg" alt="瑞士少女峰馬拉松 封面實景" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">⛰️</div>
+              <strong>艾格冰河終點雪山絕景</strong>
+              <div class="image-fallback-text">圖片路徑：images/jungfrau_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：直面艾格峰北壁 ｜ 終點海拔 2,320 公尺冰河雪峰衝線</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">📋 規格認證 ｜ 基本資訊</span>
+        <h2 class="slide-title">賽事基本資訊與核心規格</h2>
+        <p class="slide-subtitle">前平後陡的高難度垂直跨度，要求跑者兼具公路巡航與高山徒步雙重實力</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">⏱️ 賽事時程與限時</div>
+            <p class="card-text">
+              • <strong>舉辦月份</strong>：每年 9 月第一個週末。<br>
+              • <strong>總關門限時</strong>：約 6 小時 30 分鐘。<br>
+              • <strong>參賽名額</strong>：全球嚴格限額 4,000 名。
+            </p>
+            <div class="card-highlight">
+              名額極度搶手，通常於開放登記數日內售罄。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📈 海拔爬升與落差</div>
+            <p class="card-text">
+              • <strong>累計爬升</strong>：+1,953 公尺。<br>
+              • <strong>累計下降</strong>：-200 公尺。<br>
+              • <strong>起終點海拔</strong>：566m 直登 2,320m。
+            </p>
+            <div class="card-highlight">
+              爬升高度高度集中於後半程 17 公里山徑。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏃 賽道地形與難度</div>
+            <p class="card-text">
+              • <strong>路面屬性</strong>：湖岸柏油、碎石山徑、冰河步道。<br>
+              • <strong>難度分級</strong>：極高（高海拔山岳越野）。<br>
+              • <strong>完賽率</strong>：歷年官方統計約 92%。
+            </p>
+            <div class="card-highlight">
+              對大腿股四頭肌離心肌力與心肺負擔極大。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏅 國際權威山岳標籤</div>
+            <p class="card-text">
+              • <strong>賽事聲譽</strong>：世界公認頂級景觀馬拉松。<br>
+              • <strong>認證體系</strong>：瑞士田徑總會正式賽事。<br>
+              • <strong>高山紀錄</strong>：男子紀錄 3:03:54，女子 3:17:35。
+            </p>
+            <div class="card-highlight">
+              頂尖好手與慢旅健行跑者共同奔赴的聖山。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🗺️ 賽道路況 ｜ 魔王路段</span>
+        <h2 class="slide-title">賽道結構與關鍵魔王路段剖析</h2>
+        <p class="slide-subtitle">明確劃分三大地形階段：市區平跑、谷地緩升與後段高山陡攀天堂路</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">🧭 三大地形階段戰術</div>
+              <p class="card-text">
+                • <strong>第一階段（0-10km 平路）</strong>：因特拉肯出發順布里恩茨湖奔馳，地勢極平，切勿盲目衝快。<br>
+                • <strong>第二階段（10-25km 緩升）</strong>：穿入勞特布龍嫩瀑布鎮，仰望施陶河瀑布，保持均勻跑步呼吸。<br>
+                • <strong>第三階段（25-42.195km 陡攀）</strong>：離開瀑布鎮後拔地而起，爬升逾千米，果斷切換快步登山（Power Hiking）。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">⚠️ 魔王路段：25-38km「溫根壁」（Wengen Wall）與高山關門點</div>
+              <p class="card-text">
+                • <strong>痛點剖析</strong>：連續陡峭髮夾彎爬升直衝溫根台地（Wengen），雙腿承受劇烈乳酸堆積與重力拉扯；38.5km Wixi 關門點限時 5 小時 50 分鐘，一旦落後收尾單車將被終止比賽。<br>
+                • <strong>通關策略</strong>：放棄無謂慢跑，雙手撐膝大步健行快走；利用登山步頻維持心率平穩，節省體力至終點衝刺。
+              </p>
+              <div class="card-highlight">
+                大方切換健行快走模式，是完賽少女峰的最聰明戰術！
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/jungfrau_02.jpg" alt="瑞士少女峰馬拉松 路線圖" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗺️</div>
+              <strong>少女峰馬拉松垂直海拔剖面圖</strong>
+              <div class="image-fallback-text">圖片路徑：images/jungfrau_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：少女峰馬拉松 1,953 公尺垂直登頂海拔剖面</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🎫 資格門檻 ｜ 搶票攻略</span>
+        <h2 class="slide-title">報名管道、時程與名額搶購策略</h2>
+        <p class="slide-subtitle">先報先得制：掌握每年情人節前後開放窗口，享受獨家「號碼布即車票」福利</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">🎲 1. 官網個人開放報名</div>
+            <p class="card-text">
+              • <strong>開放時間</strong>：通常於每年 2 月中旬開放。<br>
+              • <strong>報名機制</strong>：先到先得（First-come, First-served）。<br>
+              • <strong>報名費用</strong>：第一階段約 CHF 179，第二階段 CHF 199。<br>
+              • <strong>搶票實況</strong>：全球熱搶，開放數日內火速滿額。
+            </p>
+            <div class="card-highlight">
+              務必提前設定鬧鐘，開放首日即刻下單。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🎫 2. 瑞士免費鐵路通票 (Swiss Ticket)</div>
+            <p class="card-text">
+              • <strong>專屬福利</strong>：報名成功即贈瑞士境內免費火車票。<br>
+              • <strong>涵蓋範圍</strong>：瑞士全境任何車站二等座往返因特拉肯。<br>
+              • <strong>使用期限</strong>：賽前至賽後約 10 天內均可兌換使用。<br>
+              • <strong>賽後下山</strong>：憑號碼布免費搭乘艾格快線纜車或齒軌火車。
+            </p>
+            <div class="card-highlight">
+              價值逾百瑞士法郎，大幅省去境內高昂交通支出。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">✈️ 3. 國際旅行社套裝 (ITO)</div>
+            <p class="card-text">
+              • <strong>合作模式</strong>：授權海外運動旅行社販售。<br>
+              • <strong>套裝內容</strong>：保證參賽名額 ＋ 少女峰地區精選飯店住宿。<br>
+              • <strong>適合跑者</strong>：錯過官網搶票或需要全程旅程照應者。<br>
+              • <strong>優勢</strong>：100% 參賽確定性。
+            </p>
+            <div class="card-highlight">
+              搶票向隅者的最佳安全退路方案。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🤝 4. 慈善與贊助合作席位</div>
+            <p class="card-text">
+              • <strong>慈善途徑</strong>：向賽事合作公益基金會捐款獲取席位。<br>
+              • <strong>轉讓條款</strong>：大會允許在規定期限內支付手續費轉讓。<br>
+              • <strong>取消保險</strong>：報名時建議加購取消保險。<br>
+              • <strong>周邊賽事</strong>：週五設有 Minirun 與歡樂跑。
+            </p>
+            <div class="card-highlight">
+              健全的轉讓機制兼顧傷病彈性。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🚆 後勤物流 ｜ 起終點動線</span>
+        <h2 class="slide-title">高山物流交通、住宿選址與 Expo 領物</h2>
+        <p class="slide-subtitle">因特拉肯起跑至艾格冰河終點之高山越嶺物流：行李直掛格林德瓦</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">📍 起終點交通與下山動線</div>
+            <p class="card-text">
+              • <strong>起點集結</strong>：因特拉肯霍赫馬特草坪（Höhematte），步行可達因特拉肯東站與西站。<br>
+              • <strong>終點位置</strong>：海拔 2,320m 艾格冰河站（Eigergletscher）。<br>
+              • <strong>完賽下山</strong>：憑號碼布免費搭乘高科技「艾格快線纜車（Eiger Express）」直降格林德瓦（Grindelwald Terminal）領取行李，再轉乘火車返回因特拉肯。
+            </p>
+            <div class="card-highlight">
+              瑞士齒軌火車與纜車網絡緊密串接，下山流暢無虞。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏨 住宿選址精準策略</div>
+            <p class="card-text">
+              • <strong>首選 A 區（因特拉肯市中心）</strong>：步行即達起跑點與賽前博覽會，生活機能與餐飲最豐富。<br>
+              • <strong>首選 B 區（格林德瓦 Grindelwald）</strong>：完賽下山第一站，領完行李可直接回飯店泡湯休息。<br>
+              • <strong>首選 C 區（勞特布龍嫩 / 溫根）</strong>：深處瀑布峽谷，賽事途經點，適合親友沿途駐點加油。
+            </p>
+            <div class="card-highlight">
+              阿爾卑斯小鎮旅宿容量有限，需提前半年前預訂。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📦 Expo 領物與行李直掛轉運</div>
+            <p class="card-text">
+              • <strong>博覽會地點</strong>：因特拉肯賭場花園展廳（Kursaal Interlaken）。<br>
+              • <strong>領物規範</strong>：週五開放親領號碼布、晶片與官方紀念背包禮包。<br>
+              • <strong>行李直掛要領</strong>：比賽清晨在起跑區交付大會寄物袋，大會將透過專屬貨運火車將衣物直接運送至下山站「格林德瓦」供賽後更衣。
+            </p>
+            <div class="card-highlight">
+              終點高寒風大，寄物袋內務必備妥保暖羽絨衣與毛帽。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏃 實戰準備 ｜ 裝備與補給</span>
+        <h2 class="slide-title">高山氣候應對、越野鞋選型與能量補給</h2>
+        <p class="slide-subtitle">起點 15°C 至終點近 0°C 的極端溫差：高抓地越野鞋與防風保暖必備</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">🌡️ 高山垂直氣候數據</div>
+            <p class="card-text">
+              • <strong>起點氣溫</strong>：因特拉肯山下約 12°C 至 20°C，氣候宜人。<br>
+              • <strong>終點氣溫</strong>：海拔 2,320m 艾格冰河終點常驟降至 0°C 至 8°C，且偶有冰雪寒風。<br>
+              • <strong>紫外線強度</strong>：高海拔紫外線強烈，需備運動太陽眼鏡與高係數防曬。<br>
+              • <strong>體感落差</strong>：劇烈爬升流汗後，衝線靜止極易瞬間失溫。
+            </p>
+            <div class="card-highlight">
+              隨身攜帶輕量可折疊防風外套是高山安全鐵律。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">👟 跑鞋挑選與裝備策略</div>
+            <p class="card-text">
+              • <strong>跑鞋首選</strong>：強烈建議選用兼顧輕量與深齒紋大底的「混合型越野跑鞋」。<br>
+              • <strong>路面適配</strong>：前半程柏油需適度回彈，後半程碎石與泥徑需極強抓地力防滑。<br>
+              • <strong>服裝穿搭</strong>：底層排汗短袖＋袖套＋折疊風衣，下半身壓縮褲保護股四頭肌。<br>
+              • <strong>越野腰包</strong>：必備多口袋腰包攜帶能量膠、鹽錠與手機。
+            </p>
+            <div class="card-highlight">
+              大會嚴禁使用登山杖，全憑雙腿與核心肌群登頂。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🍵 大會補給與登山能量節奏</div>
+            <p class="card-text">
+              • <strong>補給站密度</strong>：全程設有多達 15 處補給站，提供水、運動飲料、能量凝膠與香蕉。<br>
+              • <strong>特色熱食</strong>：後半段高山站點提供溫熱肉湯與可樂，迅速驅寒提神。<br>
+              • <strong>能量策略</strong>：爬升階段心率高、消化慢，建議每 30-40 分鐘補足小劑量能量膠。<br>
+              • <strong>電解質補充</strong>：持續爬升流汗量大，定時補鹽防止大腿抽筋。
+            </p>
+            <div class="card-highlight">
+              多喝熱湯維持核心體溫，穩健步頻克制疲勞。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🌸 賽後巡禮 ｜ 導航跳轉</span>
+        <h2 class="slide-title">賽後文化巡禮與系列下一站</h2>
+        <p class="slide-subtitle">在萬年雪山前品嘗熱起司通心粉，聆聽長號祝賀，啟航前往沙漠玫瑰古城</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">♨️ 完賽慶功與阿爾卑斯慢旅</div>
+              <p class="card-text">
+                • <strong>艾格冰河派對（Glacier Party）</strong>：衝線後在終點大口享用瑞士傳統熱通心粉與馬鈴薯（Älplermagronen），伴隨阿爾卑斯長號悠揚樂聲。<br>
+                • <strong>歐洲之巔少女峰鞍部（Jungfraujoch）</strong>：搭乘齒軌火車直上 3,454m 歐洲最高火車站，俯瞰壯麗阿萊奇冰川。<br>
+                • <strong>圖恩湖與布里恩茨湖遊船</strong>：賽後隔日悠然搭乘蒸氣遊船巡遊雙湖，吹著微風排酸，享受人間仙境。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🧭 知識圖譜雙向導航系統</div>
+              <p class="card-text">
+                告別瑞士冰河雪壁，下一站將帶您穿越至中東沙漠深處，在 40°C 烈日與玫瑰紅卡茲尼神殿前展開千年冒險！
+              </p>
+              <div class="jump-box">
+                <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="jump-btn">
+                  <span>🏠 返回總首頁索引</span>
+                  <span>➔</span>
+                </a>
+                <a href="約旦佩特沙漠馬拉松.html" class="jump-btn">
+                  <span>➡️ 下一站：約旦佩特沙漠馬拉松</span>
+                  <span>➔</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/jungfrau_03.jpg" alt="瑞士少女峰馬拉松 完賽風采" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>少女峰馬拉松完賽獎牌與冰河風采</strong>
+              <div class="image-fallback-text">圖片路徑：images/jungfrau_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：艾格冰河站完賽榮耀 ｜ 離天堂最近的越野馬拉松獎牌</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[少女峰馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[少女峰馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

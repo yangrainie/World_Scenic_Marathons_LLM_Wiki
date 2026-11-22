@@ -1,0 +1,977 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本東京馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 江戶藍墨 (Edo Indigo) */
+      --accent-color: #2C405A;
+      --accent-tint: #EDF2F7;
+      --accent-border: #CAD6E2;
+      --accent-highlight: #1B2B3E;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header (+2px Font Size Upgrade) */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.2rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+    }
+
+    /* Body Container */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      min-height: 0;
+    }
+
+    /* Cards System (+2px Font Size Upgrade) */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.85rem, 1.25vw, 1.25rem);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      line-height: 1.62;
+      flex: 1;
+    }
+
+    .card-text strong {
+      color: var(--ink-primary);
+    }
+
+    .card-highlight {
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-color);
+      border-left: 3px solid var(--accent-color);
+      font-weight: 500;
+    }
+
+    /* Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+
+    /* Split 2-Column Layout (Tighter, balanced gap for Slide 1, 3, 7) */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(0.9rem, 1.6vw, 1.6rem);
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-text {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Image Display Container */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      height: 100%;
+      min-height: 220px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, #EBE8E1 100%);
+      color: var(--ink-secondary);
+      gap: 8px;
+    }
+
+    .image-fallback-icon {
+      font-size: 2.2rem;
+      opacity: 0.85;
+    }
+
+    .image-fallback-text {
+      font-size: 0.88rem;
+      color: var(--ink-tertiary);
+    }
+
+    .image-caption {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    /* Metrics Bar (+2px Font Size Upgrade) */
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.55rem;
+    }
+
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--ink-secondary);
+    }
+
+    .metric-chip strong {
+      color: var(--accent-color);
+      margin-left: 2px;
+    }
+
+    /* Navigation Dock (+2px Font Size Upgrade) */
+    #bottom-nav {
+      height: 56px;
+      border-top: 1px solid var(--border-color);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.2rem, 3.2vw, 3.2rem);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+
+    .nav-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd {
+      padding: 2px 6px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .traceability-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .traceability-pill strong {
+      color: var(--accent-color);
+    }
+
+    /* Jump Button in Slide 7 */
+    .jump-box {
+      margin-top: 0.65rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .jump-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--accent-tint);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .jump-btn:hover {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 900px) {
+      .grid-4, .grid-3, .split-layout { grid-template-columns: 1fr; }
+      .nav-tips { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck Container -->
+  <main class="slides-deck" id="deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏛️ 賽事名片 ｜ 殿堂級導覽</span>
+        <h1 class="slide-title">日本東京馬拉松 (Tokyo Marathon)</h1>
+        <p class="slide-subtitle">世界馬拉松大滿貫 (WMM) 亞洲唯一分站 ｜ 全球跑者夢寐以求的最高競速殿堂</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <!-- Left Content -->
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">📜 賽事身分證與核心定位</div>
+              <div class="metrics-row">
+                <span class="metric-chip">• 六大滿貫<strong>WMM</strong></span>
+                <span class="metric-chip">• 世界田總<strong>白金標</strong></span>
+                <span class="metric-chip">• 完賽率<strong>96%+</strong></span>
+                <span class="metric-chip">• 賽期<strong>每年 3 月初</strong></span>
+              </div>
+              <p class="card-text">
+                創辦於 2007 年，僅用 6 年便於 2013 年躋身世界馬拉松大滿貫第六大成員，與波士頓、倫敦等百年老賽齊名。每年 3 萬多名跑者穿梭於東京都心，以極致秩序感、全平坦快速路況與狂熱街頭加油聲浪聞名全球。
+              </p>
+              <div class="card-highlight">
+                亞洲跑者零時差海外首馬首選，兼具文化底蘊與破個人紀錄（PB）潛力的經典之作。
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🌟 三大核心特色摘要</div>
+              <p class="card-text">
+                • <strong>雙重賽道設計</strong>：前半段皇居文化巡禮，後半段銀座都會衝刺。<br>
+                • <strong>全民暖心私補</strong>：沿途居民自發提供淺草現烤仙貝、熱紅豆湯與銀座和菓子。<br>
+                • <strong>盛大變裝文化</strong>：動漫人物與傳統裝束齊聚，宛如大型城市跑步嘉年華。
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Image Slot 1 -->
+          <div class="image-panel">
+            <img src="images/tokyo_01.jpg" alt="日本東京馬拉松 封面實景" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏛️</div>
+              <strong>東京都廳起跑盛況</strong>
+              <div class="image-fallback-text">圖片路徑：images/tokyo_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：東京都廳起跑萬人盛況 ｜ 亞洲大滿貫起點</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">📋 規格認證 ｜ 基本資訊</span>
+        <h2 class="slide-title">賽事基本資訊與核心規格</h2>
+        <p class="slide-subtitle">極致平坦地形與超寬容時限，兼具頂級競速與新手友善雙重特質</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">⏱️ 賽事時程與限時</div>
+            <p class="card-text">
+              • <strong>舉辦月份</strong>：每年 3 月第一個星期日。<br>
+              • <strong>關門限時</strong>：7 小時（超寬鬆）。<br>
+              • <strong>賽事規模</strong>：約 38,000 名跑者。
+            </p>
+            <div class="card-highlight">
+              時限充裕，初次挑戰全馬跑者無心理壓力。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📈 海拔落差與坡度</div>
+            <p class="card-text">
+              • <strong>累計爬升</strong>：約 42 公尺。<br>
+              • <strong>累計下降</strong>：約 67 公尺。<br>
+              • <strong>地形趨勢</strong>：前高後低微下坡平路。
+            </p>
+            <div class="card-highlight">
+              起跑新宿處於高點，開局順暢省力。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏃 賽道地形與難度</div>
+            <p class="card-text">
+              • <strong>路面屬性</strong>：全柏油平整城市公路。<br>
+              • <strong>難度分級</strong>：初級（適合各級跑者）。<br>
+              • <strong>完賽率</strong>：歷年常態高達 96% 以上。
+            </p>
+            <div class="card-highlight">
+              路況開闊平坦，極度利於維持步頻。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏅 國際組織認證標籤</div>
+            <p class="card-text">
+              • <strong>標籤認證</strong>：世界田總白金標籤。<br>
+              • <strong>聯盟體系</strong>：Abbott WMM 六大滿貫。<br>
+              • <strong>資格採納</strong>：成績可作為波士頓 BQ 認證。
+            </p>
+            <div class="card-highlight">
+              國際頂級公信力，成績獲全球採納。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🗺️ 賽道路況 ｜ 魔王路段</span>
+        <h2 class="slide-title">賽道結構與關鍵魔王路段</h2>
+        <p class="slide-subtitle">心理學雙重賽道設計：前半程文化熱身，後半程迎戰關鍵橋樑爬坡</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <!-- Left Course Breakdown -->
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">🧭 雙重賽道分段戰術</div>
+              <p class="card-text">
+                • <strong>0-5km（下坡開局）</strong>：新宿至飯田橋海拔由 35m 降至 15m，順坡切忌爆衝。<br>
+                • <strong>5-20km（文化巡禮）</strong>：神保町、皇居、品川與銀座，路面極平，群眾聲浪最熱情。<br>
+                • <strong>20-30km（折返考驗）</strong>：淺草雷門遠眺晴空塔，藏前至門前仲町需專注配速。<br>
+                • <strong>35-42.195km（終點衝刺）</strong>：豐洲回轉進入東京站前行幸通，紅磚車站衝線。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">⚠️ 魔王路段：30-35km 佃大橋</div>
+              <p class="card-text">
+                • <strong>坡度結構</strong>：海拔自 3m 上升至 12m，坡長約 300 公尺。<br>
+                • <strong>痛點剖析</strong>：恰逢撞牆期體能臨界點，看似微小的上坡會帶來強烈沉重感。<br>
+                • <strong>通關策略</strong>：提前 100m 減速換檔，縮小步幅並提高步頻，切忌強發力硬衝。
+              </p>
+              <div class="card-highlight">
+                通過佃大橋後即是一路平坦大道，勝券在握！
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Image Slot 2 -->
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/tokyo_02.jpg" alt="日本東京馬拉松 路線圖" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗺️</div>
+              <strong>賽道路線與海拔剖面</strong>
+              <div class="image-fallback-text">圖片路徑：images/tokyo_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：東京馬拉松 42.195 公里全景路線與落差剖析</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🎫 資格門檻 ｜ 搶票攻略</span>
+        <h2 class="slide-title">報名管道與搶票四大途徑</h2>
+        <p class="slide-subtitle">中籤率僅約 8%～12% 的「萬中選一」賽事，全面掌握四種名額獲取渠道</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">🎲 1. 一般公開抽籤</div>
+            <p class="card-text">
+              • <strong>登記時程</strong>：每年 8 月中下旬開放登記。<br>
+              • <strong>放榜時間</strong>：每年 10 月上旬公告中籤名單。<br>
+              • <strong>錄取機率</strong>：海外一般跑者中籤率約 8%~12%。<br>
+              • <strong>參賽費用</strong>：海外跑者 25,300 日圓。
+            </p>
+            <div class="card-highlight">
+              門檻最低、最考驗運氣的常規途徑。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">💖 2. 慈善募捐名額</div>
+            <p class="card-text">
+              • <strong>運作機制</strong>：向大會指定公益組織捐款。<br>
+              • <strong>捐款門檻</strong>：約 100,000 至 200,000 日圓起。<br>
+              • <strong>資格特性</strong>：名額有限，採先報先得額滿為止。<br>
+              • <strong>名額保障</strong>：保證免抽籤直接參賽。
+            </p>
+            <div class="card-highlight">
+              名額確定度高，為愛心公益奔馳。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">✈️ 3. 官方旅行社套裝</div>
+            <p class="card-text">
+              • <strong>合作模式</strong>：授權國際旅行社（ITO）販售。<br>
+              • <strong>套裝內容</strong>：保證名額＋指定飯店＋專車接駁。<br>
+              • <strong>總體花費</strong>：單人費用通常較高。<br>
+              • <strong>適合對象</strong>：無暇規劃繁雜後勤的跑者。
+            </p>
+            <div class="card-highlight">
+              100% 保證出賽，省去後勤焦慮。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">⚡ 4. 精英成績直通</div>
+            <p class="card-text">
+              • <strong>直通計畫</strong>：Run as One 半菁英直通。<br>
+              • <strong>成績標準</strong>：男子全馬 2:21 內、女子 2:52 內。<br>
+              • <strong>認證要求</strong>：需持有指定國際公認賽事成績證明。<br>
+              • <strong>名額特點</strong>：免抽籤、起跑分區排於最前列。
+            </p>
+            <div class="card-highlight">
+              專屬於頂尖速度好手的尊榮通道。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🚆 後勤物流 ｜ 起終點動線</span>
+        <h2 class="slide-title">交通後勤、住宿選址與領物避坑</h2>
+        <p class="slide-subtitle">非環狀賽道的越洋物流佈局：從起點新宿到終點東京車站的無縫銜接</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">📍 起終點交通與動線</div>
+            <p class="card-text">
+              • <strong>起點位置</strong>：新宿東京都廳（搭乘 JR 山手線或大江戶線至都廳前站）。<br>
+              • <strong>終點位置</strong>：東京車站前行幸通（鄰近大手町與東京站）。<br>
+              • <strong>兩地關聯</strong>：起點與終點相距約 8 公里，搭乘東京地鐵丸之內線約 20 分鐘直達。
+            </p>
+            <div class="card-highlight">
+              起終點不同位置，賽前務必規劃好返程路線。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏨 住宿選址精準策略</div>
+            <p class="card-text">
+              • <strong>首選區域 A（新宿）</strong>：起跑日早晨可直接步行至起跑集結區，避開擁擠地鐵。<br>
+              • <strong>首選區域 B（丸之內 / 神田）</strong>：距離終點極近，完賽後能以最快速度回房洗熱水澡與更衣。<br>
+              • <strong>通盤考量</strong>：建議鎖定「山手線沿線」飯店，大幅降低清晨轉乘壓力。
+            </p>
+            <div class="card-highlight">
+              中籤公布後請即刻預訂飯店，熱門區域極速滿房。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📦 Expo 領物與寄物規範</div>
+            <p class="card-text">
+              • <strong>Expo 地點</strong>：東京國際展示場（Tokyo Big Sight）。<br>
+              • <strong>領物時限</strong>：賽前連續三天開放，比賽當日不設現場領物。<br>
+              • <strong>核驗規範</strong>：必須本人攜帶護照親領，嚴格禁止任何形式代領。<br>
+              • <strong>寄物規定</strong>：需提前付費選購官方指定寄物袋，現場設嚴格安檢。
+            </p>
+            <div class="card-highlight">
+              Expo 規模盛大，建議預留 2 小時採購紀念品。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏃 實戰準備 ｜ 裝備與補給</span>
+        <h2 class="slide-title">氣候數據、穿著建議與特色私補</h2>
+        <p class="slide-subtitle">冬末初春的低溫應對策略，以及賽道沿途不可錯過的日式美食盛宴</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">🌡️ 歷年氣候統計數據</div>
+            <p class="card-text">
+              • <strong>氣溫區間</strong>：3°C 至 14°C（平均約 8°C）。<br>
+              • <strong>濕度水平</strong>：40% 至 70%（平均約 55%）。<br>
+              • <strong>風速均值</strong>：2 至 5 m/s。<br>
+              • <strong>降雨機率</strong>：約 20% 至 40%。
+            </p>
+            <div class="card-highlight">
+              清晨起跑體感極冷（約 4°C），中午大幅回升。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">👕 跑者實戰穿著推薦</div>
+            <p class="card-text">
+              • <strong>上身穿搭</strong>：短袖排汗衫 ＋ 可卸式袖套（方便隨溫度調節）。<br>
+              • <strong>下身穿搭</strong>：壓縮長褲或路跑短褲 ＋ 壓縮小腿套。<br>
+              • <strong>配件防護</strong>：薄防風手套、遮陽帽（防小雨兼保暖）。<br>
+              • <strong>保暖秘訣</strong>：起跑區穿著可丟棄之舊外套或雨衣，起跑後丟入大會回收箱。
+            </p>
+            <div class="card-highlight">
+              保暖決定起跑體能消耗，務必做好分層著裝。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🍵 大會補給與社區私補</div>
+            <p class="card-text">
+              • <strong>官方補給</strong>：全線提供水、電解質運動飲料、能量膠與香蕉。<br>
+              • <strong>淺草寺私補</strong>：沿線熱心居民準備現烤仙貝與熱騰騰紅豆湯。<br>
+              • <strong>銀座路段私補</strong>：老字號高級和菓子名店慷慨提供精緻迷你羊羹。<br>
+              • <strong>環保守則</strong>：飲水紙杯需果斷投入指定分類桶，維持賽道整潔。
+            </p>
+            <div class="card-highlight">
+              品味隱藏版和風私補，是東京馬特有的幸福時光。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🌸 賽後巡禮 ｜ 導航跳轉</span>
+        <h2 class="slide-title">賽後文化巡禮與系列下一站</h2>
+        <p class="slide-subtitle">掛上沉甸甸的大滿貫獎牌，洗淨疲憊、大啖串燒，並啟航探索更多世界絕景</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <!-- Left Content -->
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">♨️ 完賽慶功與深度放鬆推薦</div>
+              <p class="card-text">
+                • <strong>大手町溫泉排酸</strong>：距離終點東京站步行可達，泡天然溫泉洗去 42 公里乳酸。<br>
+                • <strong>有樂町高架下居酒屋</strong>：賽後換上輕便服裝，與跑友大啖日式炭烤串燒與冰生啤酒慶功。<br>
+                • <strong>翌日漫步散策</strong>：漫步皇居護城河或淺草雷門，慢跑慢走動態排酸，回味昨日激情賽道。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🧭 知識圖譜雙向導航系統</div>
+              <p class="card-text">
+                東京馬拉松只是您海外跑旅的第一站！您可以一鍵返回全域首頁總覽，或繼續探索下一場世界大滿貫速道殿堂。
+              </p>
+              <div class="jump-box">
+                <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="jump-btn">
+                  <span>🏠 返回總首頁索引</span>
+                  <span>➔</span>
+                </a>
+                <a href="德國柏林馬拉松.html" class="jump-btn">
+                  <span>➡️ 下一站：德國柏林馬拉松</span>
+                  <span>➔</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Image Slot 3 -->
+          <div class="image-panel">
+            <img src="images/tokyo_03.jpg" alt="日本東京馬拉松 完賽風采" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>完賽獎牌與東京車站風采</strong>
+              <div class="image-fallback-text">圖片路徑：images/tokyo_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：東京車站行幸通衝線完賽風采 ｜ 珍貴的大滿貫獎牌</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[日本東京馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[日本東京馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

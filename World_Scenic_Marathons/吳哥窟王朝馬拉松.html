@@ -1,0 +1,1166 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>吳哥窟王朝馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 青苔古石綠 (Moss Ancient Stone Green) */
+      --accent-color: #4A5843;
+      --accent-tint: #EFF2EE;
+      --accent-border: #C8D2C4;
+      --accent-highlight: #35412F;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+      line-height: 1.22;
+      margin-bottom: 0.25rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+      font-weight: 400;
+    }
+
+    /* Content Layouts */
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      justify-content: center;
+      justify-content: safe center;
+    }
+
+    /* Split Layout: Content + Image */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.22fr 0.98fr;
+      gap: clamp(1rem, 2vw, 1.6rem);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .notion-card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-list li {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Grid Layouts */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(0.65rem, 1.1vw, 1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.75rem, 1.2vw, 1.1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* Cards */
+    .notion-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.75rem, 1.25vw, 1.15rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .notion-card.featured {
+      border-left: 4px solid var(--accent-color);
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--accent-tint) 100%);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: clamp(0.35rem, 0.6vw, 0.55rem);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.35rem;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-tag {
+      font-size: clamp(0.82rem, 0.95vw, 0.9rem);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--card-bg-subtle);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.32rem;
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      overflow-y: auto;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .card-list li {
+      position: relative;
+      padding-left: 14px;
+      line-height: 1.48;
+    }
+    .card-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+    .card-list strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .card-highlight {
+      margin-top: 0.35rem;
+      padding: 6px 10px;
+      background: var(--accent-tint);
+      border: 1px dashed var(--accent-border);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-highlight);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Metric Chips */
+    .metric-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+    .metric-chip {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    /* Image Display Panel */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+      min-height: 0;
+    }
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      flex: 1;
+      min-height: 0;
+    }
+    .image-fallback {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, var(--accent-tint) 100%);
+      padding: 1.5rem;
+      text-align: center;
+      border: 2px dashed var(--accent-border);
+      border-radius: var(--radius-md);
+      margin: 8px;
+    }
+    .image-fallback-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent-color);
+    }
+    .image-fallback strong {
+      font-size: 1.05rem;
+      color: var(--ink-primary);
+      margin-bottom: 0.3rem;
+    }
+    .image-fallback-text {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+    }
+    .image-caption {
+      padding: 8px 14px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.84rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 3vw, 2.5rem);
+      z-index: 90;
+      flex-shrink: 0;
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border-color: var(--accent-border);
+    }
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kbd {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .btn-next-race {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--accent-color);
+      border: 1px solid var(--accent-highlight);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+    .btn-next-race:hover {
+      background: var(--accent-highlight);
+      transform: translateY(-1px);
+    }
+
+    .traceability-pill {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+    .traceability-pill strong {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .split-layout { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .image-panel { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck -->
+  <main class="slides-deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-slide="1" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🏛️ 賽事名片與封面</div>
+        <h1 class="slide-title">吳哥窟王朝馬拉松 (Angkor Empire Marathon)</h1>
+        <div class="slide-subtitle">穿越千年高棉帝國石雕奇景，唯一的吳哥窟官方認證全馬古蹟賽道</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🏃 賽事基本定位</span>
+                <span class="card-tag">UNESCO 遺產</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>創辦年份</strong>：2014 年創辦，獲 AIMS 與 IAAF 官方賽道認證</li>
+                  <li><strong>唯一全馬</strong>：唯一獲准於吳哥考古公園內舉辦 42.195 km 的正式賽事</li>
+                  <li><strong>地理位置</strong>：柬埔寨暹粒吳哥考古公園（UNESCO 世界文化遺產保護區）</li>
+                  <li><strong>慈善宗旨</strong>：賽事收益主要用於資助柬埔寨當地殘障人士與貧困兒童教育</li>
+                  <li><strong>參賽規模</strong>：預計逾 4,500 人參賽，涵蓋全球 50 餘個國家選手齊聚</li>
+                </ul>
+                <div class="metric-chip-row">
+                  <span class="metric-chip">世界文化遺產</span>
+                  <span class="metric-chip">唯一全馬賽事</span>
+                  <span class="metric-chip">AIMS 認證</span>
+                </div>
+              </div>
+              <div class="card-highlight">
+                UNESCO 世界文化遺產 ｜ 唯一官方許可吳哥窟全馬賽事
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🌍 跑旅核心精神</span>
+                <span class="card-tag">千年文明</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>神廟巡禮</strong>：賽道環繞並穿越近 40 座古老神廟與石砌城門</li>
+                  <li><strong>晨曦啟程</strong>：清晨 4:30 於小吳哥中央聖殿前起跑，第一縷晨光映照蓮花塔尖</li>
+                  <li><strong>氣候考驗</strong>：8 月熱帶雨季平均 26°C~31°C、相對濕度 >80%，考驗熱適應能力</li>
+                  <li><strong>雙賽辨析</strong>：明確區別 8 月全馬「帝國馬拉松」與 12 月半馬「吳哥窟國際半馬」</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                穿越千年石雕歷史長廊 ｜ 在佛面微笑下見證毅力與慈善
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/angkor_01.jpg" alt="吳哥窟王朝馬拉松 小吳哥起跑與高棉神廟" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏛️</div>
+              <strong>穿越千年古蹟石雕長廊</strong>
+              <div class="image-fallback-text">圖片路徑：images/angkor_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：小吳哥中央聖殿起終點 ｜ 跑者披星戴月迎向高棉千年曙光</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-slide="2" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">📋 賽事基本資訊</div>
+        <h1 class="slide-title">競賽規程與規格矩陣</h1>
+        <div class="slide-subtitle">4:30 AM 清晨起跑，AIMS 賽道認證與超長 6.5 小時寬容限時</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⏱️ 起跑時程與組別</span>
+              <span class="card-tag">寬容限時</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>舉辦時間</strong>：每年 8 月第一個星期日（例如 2026 年 8 月 2 日）</li>
+                <li><strong>全程馬拉松</strong>：04:30 AM 起跑，限時 6 小時 30 分（限滿 16 歲）</li>
+                <li><strong>半程馬拉松</strong>：05:30 AM 起跑，限時 4 小時 00 分（限滿 16 歲）</li>
+                <li><strong>短程組別</strong>：10K 公路賽（05:45 AM / 2 小時）、3K 歡樂跑（06:00 AM）</li>
+                <li><strong>收費機制</strong>：國際跑者全馬早鳥價約 60 美元，半馬 50 美元</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">全馬 6.5 小時</span>
+                <span class="metric-chip">半馬 4.0 小時</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛰️ 地形坡度與路面</span>
+              <span class="card-tag">極度平坦</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>平坦賽道</strong>：全程幾乎無明顯坡度起伏與高低落差，視野平順</li>
+                <li><strong>路面構成</strong>：平整柏油路為主，穿插壓實平緩的古蹟紅土林蔭徑</li>
+                <li><strong>林蔭遮蔽</strong>：考古園區高聳古樹提供上午前段絕佳的自然遮陽</li>
+                <li><strong>水站配置</strong>：每 2 公里設置一處水站，供應冰鎮礦泉水與電解質飲料</li>
+                <li><strong>交通管制</strong>：賽道實施嚴格人車分流，沿途有警察與志工維持秩序</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">平整柏油</span>
+                <span class="metric-chip">每 2km 水站</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">☀️ 濕熱氣候與挑戰</span>
+              <span class="card-tag">高溫高濕</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>環境氣溫</strong>：熱帶雨季氣候，清晨約 25°C~28°C，日間最高達 31°C</li>
+                <li><strong>極致濕度</strong>：相對濕度常年高於 80%，汗水揮發散熱效率受阻</li>
+                <li><strong>配速降速</strong>：未經熱適應者成績普遍比涼爽賽道慢 15% 至 30%</li>
+                <li><strong>熱適應建議</strong>：建議賽前 8 週進行熱適應訓練，提早 3~4 天抵達暹粒</li>
+                <li><strong>補水指引</strong>：以口渴即喝為基準，每小時補水量上限約 650 毫升</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">濕度 >80%</span>
+                <span class="metric-chip">氣溫 26°C~31°C</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🤝 雙賽辨析與認證</span>
+              <span class="card-tag">AIMS 認證</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>帝國馬拉松</strong>：8 月舉辦，AIMS 認證全馬，資助當地殘障與兒童慈善</li>
+                <li><strong>吳哥國際半馬</strong>：12 月舉辦（涼季），最高僅 21K，資助地雷受害者</li>
+                <li><strong>唯一全馬資格</strong>：帝國馬拉松是唯一獲准奔馳 42.195 km 的正式賽事</li>
+                <li><strong>門票提醒</strong>：選手號碼布不等於景區門票，賽後觀光須另購 Angkor Pass</li>
+                <li><strong>資格認可</strong>：全馬成績可登錄為波士頓等國際賽事資格證明</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">唯一全馬</span>
+                <span class="metric-chip">IAAF/AIMS 認可</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-slide="3" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">⚡ 賽道結構與魔王路段</div>
+        <h1 class="slide-title">巴戎寺佛面笑顏與 80% 濕熱極限考驗</h1>
+        <div class="slide-subtitle">穿梭千年石砌神廟與城門，面對高溫高濕的核心體溫魔王考驗</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🗺️ 賽道分段結構剖析</span>
+                <span class="card-tag">全馬 42.195 km</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>小吳哥啟程（0~5 km）</strong>：04:30 AM 頭燈引領起跑，晨光越過小吳哥西回廊與蓮花寶塔</li>
+                  <li><strong>巴戎寺古城（5~10 km）</strong>：穿越南門石橋，近距離仰望巴戎寺 216 面「高棉的微笑」</li>
+                  <li><strong>田園與村莊（11~25 km）</strong>：穿過傳統高棉聚落與水稻田，兩側村民與孩童熱情加油</li>
+                  <li><strong>茶膠寺環線（26~37 km）</strong>：經過未完工的神山金字塔茶膠寺與石雕工藝迴廊</li>
+                  <li><strong>終點榮耀（38~42.195 km）</strong>：再次掠過塔普倫神廟巨樹奇景，回到小吳哥中央聖殿完賽</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                環繞近 40 座古老神廟 ｜ 一步一景的千年高棉文明畫卷
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🛑 魔王路段：8 月高濕與體溫上升</span>
+                <span class="card-tag">隱形魔王</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>濕熱隱形殺手</strong>：賽道平坦無坡，但 80% 以上相對濕度造成汗水難以蒸發，散熱受阻</li>
+                  <li><strong>體能斷崖點（30~35 km）</strong>：上午 7:30 太陽升起後陽光直射，無遮蔽路段核心體溫快速飆升</li>
+                  <li><strong>石板路面防滑</strong>：部分古蹟路段由歷史石塊拼接，晨露與潮濕路面需專注防滑防摔</li>
+                  <li><strong>隨站物理降溫</strong>：每 2 公里水站務必取水澆頭淋腕，小口補充電解質防抽筋</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                賽道平坦但高濕致命 ｜ 嚴控前段配速並隨站降溫小口補充電解質
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/angkor_02.jpg" alt="吳哥窟王朝馬拉松 巴戎寺高棉的微笑賽道" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗿</div>
+              <strong>巴戎寺高棉的微笑賽道</strong>
+              <div class="image-fallback-text">圖片路徑：images/angkor_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：巴戎寺四面佛石雕 ｜ 跑者仰望高棉的微笑穿越千年石砌城門</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-slide="4" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎟️ 報名資格與搶票攻略</div>
+        <h1 class="slide-title">國際報名管道與分級早鳥機制</h1>
+        <div class="slide-subtitle">線上官網直接報名，分級累進收費與超早鳥優惠策略</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌐 官方線上報名流程</span>
+              <span class="card-tag">直接註冊</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>報名入口</strong>：透過 Cambodia Events 官方網站線上註冊並信用卡付款</li>
+                <li><strong>截止時程</strong>：每年 6 月 25 日截止個人報名（團體報名 6 月 20 日截止）</li>
+                <li><strong>無現場報名</strong>：比賽當日絕不接受現場報名，必須提前線上登記</li>
+                <li><strong>年齡規範</strong>：全馬與半馬須年滿 16 歲，10K 須滿 13 歲，3K 不限年齡</li>
+                <li><strong>確認憑證</strong>：繳費成功後保存確認信（Confirmation Slip）作為領物憑據</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">6 月 25 日截止</span>
+                <span class="metric-chip">需滿 16 歲</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">💰 報名費用與早鳥優惠</span>
+              <span class="card-tag">階梯定價</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>全馬費用</strong>：國際跑者超早鳥價約 60 美元，隨後依截止梯次累進微調</li>
+                <li><strong>半馬費用</strong>：國際跑者超早鳥價約 50 美元，性價比極高</li>
+                <li><strong>短程費用</strong>：10K 公路賽約 35 美元，3K 歡樂跑約 15 美元（無晶片）</li>
+                <li><strong>權益包含</strong>：號碼布、計時晶片、紀念背心、完賽獎牌與慈善捐助</li>
+                <li><strong>退費條款</strong>：完成報名後不可退費或轉讓，依大會章程執行</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">全馬 $60 USD</span>
+                <span class="metric-chip">半馬 $50 USD</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">✈️ 跑旅旅行社套裝</span>
+              <span class="card-tag">安心託付</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>整合服務</strong>：國內外知名跑旅機構提供機票、精選酒店與參賽名額全包</li>
+                <li><strong>專屬接送</strong>：包含賽前賽後專屬嘟嘟車或巴士接送，免除交通溝通困擾</li>
+                <li><strong>古蹟導覽</strong>：通常搭配中文專業古蹟導遊、Angkor Pass 與特色高棉晚宴</li>
+                <li><strong>自由行評估</strong>：暹粒旅遊配套成熟，自訂機酒與嘟嘟車亦十分安全便利</li>
+                <li><strong>行程建議</strong>：建議規劃 5 天 4 夜，預留賽前適應與賽後寺廟深度遊覽</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">含導遊接駁</span>
+                <span class="metric-chip">建議 5 天 4 夜</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📝 賽資領取（Expo）</span>
+              <span class="card-tag">賽前領取</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>領取時間</strong>：賽前兩天（7 月 31 日與 8 月 1 日，09:00 至 18:00）</li>
+                <li><strong>領取地點</strong>：暹粒皇家吳哥度假村（Royal Angkor Resort 或萬豪酒店）</li>
+                <li><strong>必備文件</strong>：護照正本、確認信（Confirmation Slip），建議自備簽名筆</li>
+                <li><strong>物資內容</strong>：紀念背心、號碼布（背貼計時晶片）、別針與手冊</li>
+                <li><strong>代領規範</strong>：若委託代領，須檢附選手親簽委託書與護照影本</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">賽前兩天領物</span>
+                <span class="metric-chip">皇家吳哥度假村</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-slide="5" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🚗 交通住宿與領物寄物</div>
+        <h1 class="slide-title">暹粒住宿權衡、嘟嘟車接駁與清晨出發</h1>
+        <div class="slide-subtitle">從市區出發前往小吳哥，三大住宿聚落優缺點與起終點物流</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🏨 暹粒三大住宿區域權衡</span>
+              <span class="card-tag">跑者首選</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>Wat Bo / 河邊區域</strong>：距起點約 6~7 km，環境安靜優雅、無夜生活干擾，跑者首選</li>
+                <li><strong>老市場 / 酒吧街</strong>：距起點約 7 km，餐飲豐富生活便利，但週末夜生活較嘈雜</li>
+                <li><strong>市區北側渡假村</strong>：距起點約 3~5 km，車程最短但房價較高，適合追求省時者</li>
+                <li><strong>清晨早餐盒</strong>：清晨 3:30 出發，務必提前一天請飯店準備打包早餐盒</li>
+                <li><strong>空調溫度調控</strong>：室內冷氣切勿開得過冷，避免室內外溫差過大引起呼吸道不適</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              Wat Bo 區安靜清幽 ｜ 跑者賽前優質睡眠的首選區域
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🛺 賽日嘟嘟車接駁指引</span>
+              <span class="card-tag">預約專屬 Tuk Tuk</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>專屬交通載具</strong>：暹粒以嘟嘟車（Tuk Tuk）為主要交通工具，靈活穿梭園區</li>
+                <li><strong>提前預約司機</strong>：務必於賽前一天確認 03:30 AM 出發時間與賽後等候地點</li>
+                <li><strong>車程時間預估</strong>：從市區前往小吳哥車程約 20 分鐘，沿途有路燈與志工引導</li>
+                <li><strong>清晨時間節奏</strong>：03:00 起床用餐、03:30 出發、04:00 前抵達起點進行寄物與熱身</li>
+                <li><strong>司機辨識技巧</strong>：互留通訊軟體，並拍下車牌與司機合影以利賽後快速會合</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              提前預約專屬 Tuk Tuk 司機 ｜ 約定賽後接送集合點
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📦 終點寄物與物資規範</span>
+              <span class="card-tag">草坪寄物區</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>寄物專區</strong>：吳哥窟中央聖殿正前方大草坪設有大會專屬寄物帳篷</li>
+                <li><strong>寄物流程</strong>：使用大會寄物貼紙貼於個人行李袋，憑號碼布號碼寄放與領取</li>
+                <li><strong>寄放清單</strong>：建議寄放乾淨排汗衣物、小毛巾、拖鞋與賽後補能飲品</li>
+                <li><strong>貴重品管理</strong>：護照、錢包與手機建議隨身攜帶或存放於飯店保險箱</li>
+                <li><strong>完賽動線</strong>：過線後領取完賽獎牌、冰毛巾、純水與香蕉，隨後領取寄物袋</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              起跑點即終點 ｜ 寄放乾淨換洗衣物與賽後降溫毛巾
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-slide="6" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎒 跑步裝備、補給與氣候應變</div>
+        <h1 class="slide-title">熱適應協定、透氣輕裝與補水降溫</h1>
+        <div class="slide-subtitle">應對 80% 高濕度氣候，科學補水防抽筋與速乾輕量裝備配置</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌡️ 8 週熱適應與補水</span>
+              <span class="card-tag">散熱調適</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>8 週漸進適應</strong>：賽前 8 週每週安排 2 次熱暴露訓練（輕鬆跑多穿一層或賽後桑拿）</li>
+                <li><strong>提早抵達適應</strong>：建議提早 3~4 天抵達暹粒，使汗腺與心血管提早適應熱帶環境</li>
+                <li><strong>小口頻飲原則</strong>：沿途每 2 公里水站小口補水 100~150ml，每小時上限 650ml</li>
+                <li><strong>防範低血鈉症</strong>：切忌盲目暴飲純水，交替飲用電解質飲料或搭配自備鹽錠</li>
+                <li><strong>賽前鈉鹽儲備</strong>：開賽前 24 小時適度增加飲食鈉含量，增強體內水分滯留能力</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              連續 10~14 天熱暴露形成適應 ｜ 提前抵達適應氣候
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">👕 輕量透氣與防摩擦</span>
+              <span class="card-tag">速乾背心</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>服裝選擇</strong>：穿著超輕量、透氣且不黏身的排汗跑步背心與極短跑褲</li>
+                <li><strong>公路跑鞋</strong>：賽道整體平整，穿著抓地良好且透氣的公路競速鞋或碳板鞋</li>
+                <li><strong>防磨膏防護</strong>：大腿內側、腋下、腰部及足部塗抹防磨膏，防汗水浸濕摩擦</li>
+                <li><strong>散熱配件</strong>：配戴透氣空頂遮陽帽（可置入冰塊）與運動太陽眼鏡</li>
+                <li><strong>清晨頭燈</strong>：清晨 4:30 起跑天色全黑，前 5 公里建議配戴輕量頭燈確保路況安全</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              高濕度汗水浸透衣物 ｜ 務必全面防磨並配戴空頂散熱帽
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🧊 物理降溫與抽筋預防</span>
+              <span class="card-tag">隨站淋水</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>冰水海綿降溫</strong>：水站若提供海綿或冰塊，及時擦拭後頸、手腕以壓制核心體溫</li>
+                <li><strong>嚴格控制前段</strong>：前 20 公里壓制興奮情緒，配速比涼爽天氣放慢 15~20 秒 / 公里</li>
+                <li><strong>定時補充鹽錠</strong>：隨身攜帶 4~6 顆電解質鹽錠，每 40~50 分鐘補充一顆預防抽筋</li>
+                <li><strong>抽筋應變步驟</strong>：肌肉有緊縮感時立即改為快走，至下一水站伸展補充電解質</li>
+                <li><strong>醫療應急網絡</strong>：賽道重要節點與終點設有醫療帳篷，配備急救醫護人員</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              賽道每 2 公里設水站 ｜ 隨站物理降溫比盲目衝刺更有效
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-slide="7" data-source="[[吳哥窟王朝馬拉松]]">
+      <div class="slide-header">
+        <div class="notion-pill">🗺️ 賽後觀光與跳轉導航</div>
+        <h1 class="slide-title">千年古蹟深度巡禮與世界遺產跳轉</h1>
+        <div class="slide-subtitle">4 步驟賽後科學恢復，Angkor Pass 寺廟巡禮與下一站古典馬拉松</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🌟 賽後速效恢復與神廟巡禮</span>
+                <span class="card-tag">高棉古蹟</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>物理冷水浸泡</strong>：返回飯店後立即進行 10 分鐘冷水或泳池浸泡，快速抑制肌肉發炎</li>
+                  <li><strong>黃金 60 分鐘補能</strong>：一小時內補充高棉鹹味湯麵、雞蛋與熱帶水果，修復肌醣與蛋白質</li>
+                  <li><strong>延後深層按摩</strong>：完賽當天切勿進行深層推拿，建議安排在賽後第二天（週一）進行 SPA</li>
+                  <li><strong>Angkor Pass 觀光</strong>：另行購買官方門票，參訪小吳哥日落、大吳哥城與塔普倫神廟巨樹</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                賽後當天冷水浴降溫 ｜ 深層按摩與陡峭寺廟登山延後至隔日
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🧭 賽事跳轉導航</span>
+                <span class="card-tag">雙向導航</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>下一站賽事</strong>：[[雅典經典馬拉松]]（馬拉松歷史發源地，從馬拉松平原奔向泛雅典體育場）</li>
+                  <li><strong>賽事主題</strong>：同屬「世界遺產與自然荒野賽道」主題</li>
+                  <li><strong>總索引回訪</strong>：隨時返回首頁索引查看 12 場賽事矩陣與知識圖譜</li>
+                </ul>
+                <div style="display: flex; gap: 10px; margin-top: 0.6rem;">
+                  <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home">
+                    🏠 返回總首頁索引
+                  </a>
+                  <a href="雅典經典馬拉松.html" class="btn-next-race">
+                    ➡️ 下一站：雅典經典馬拉松
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/angkor_03.jpg" alt="吳哥窟王朝馬拉松 完賽獎牌與高棉神廟" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>吳哥窟王朝馬拉松完賽獎牌</strong>
+              <div class="image-fallback-text">圖片路徑：images/angkor_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：古文明完賽榮耀 ｜ 刻劃小吳哥經典蓮花佛塔的完賽紀念勳章</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[吳哥窟王朝馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[吳哥窟王朝馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

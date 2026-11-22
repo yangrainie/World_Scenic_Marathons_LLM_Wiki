@@ -1,0 +1,1163 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本富士山馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 深秋楓紅 (Deep Autumn Maple Red) */
+      --accent-color: #A34338;
+      --accent-tint: #F9EFEB;
+      --accent-border: #E5C3BE;
+      --accent-highlight: #823026;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+      line-height: 1.22;
+      margin-bottom: 0.25rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+      font-weight: 400;
+    }
+
+    /* Content Layouts */
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      justify-content: center;
+      justify-content: safe center;
+    }
+
+    /* Split Layout: Content + Image */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.22fr 0.98fr;
+      gap: clamp(1rem, 2vw, 1.6rem);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .notion-card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-list li {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Grid Layouts */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(0.65rem, 1.1vw, 1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.75rem, 1.2vw, 1.1rem);
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* Cards */
+    .notion-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.75rem, 1.25vw, 1.15rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .notion-card.featured {
+      border-left: 4px solid var(--accent-color);
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--accent-tint) 100%);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: clamp(0.35rem, 0.6vw, 0.55rem);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.35rem;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-tag {
+      font-size: clamp(0.82rem, 0.95vw, 0.9rem);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--card-bg-subtle);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.32rem;
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      overflow-y: auto;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .card-list li {
+      position: relative;
+      padding-left: 14px;
+      line-height: 1.48;
+    }
+    .card-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+    .card-list strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .card-highlight {
+      margin-top: 0.35rem;
+      padding: 6px 10px;
+      background: var(--accent-tint);
+      border: 1px dashed var(--accent-border);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-highlight);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Metric Chips */
+    .metric-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+    .metric-chip {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    /* Image Display Panel */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+      min-height: 0;
+    }
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      flex: 1;
+      min-height: 0;
+    }
+    .image-fallback {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, var(--accent-tint) 100%);
+      padding: 1.5rem;
+      text-align: center;
+      border: 2px dashed var(--accent-border);
+      border-radius: var(--radius-md);
+      margin: 8px;
+    }
+    .image-fallback-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent-color);
+    }
+    .image-fallback strong {
+      font-size: 1.05rem;
+      color: var(--ink-primary);
+      margin-bottom: 0.3rem;
+    }
+    .image-fallback-text {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      font-family: var(--font-mono);
+    }
+    .image-caption {
+      padding: 8px 14px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.84rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 3vw, 2.5rem);
+      z-index: 90;
+      flex-shrink: 0;
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border-color: var(--accent-border);
+    }
+    .btn-nav:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kbd {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .btn-next-race {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--accent-color);
+      border: 1px solid var(--accent-highlight);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+    .btn-next-race:hover {
+      background: var(--accent-highlight);
+      transform: translateY(-1px);
+    }
+
+    .traceability-pill {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--bg-paper);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+    .traceability-pill strong {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .split-layout { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .image-panel { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck -->
+  <main class="slides-deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-slide="1" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">🗻 賽事名片與封面</div>
+        <h1 class="slide-title">富士山馬拉松 (Mt. Fuji International Marathon)</h1>
+        <div class="slide-subtitle">奔馳於河口湖與西湖雙湖畔，遠眺白雪冠頂富士聖山與楓紅倒影</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🏃 賽事基本定位</span>
+                <span class="card-tag">世界文化遺產</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>賽事前身</strong>：創辦於 1976 年的「河口湖馬拉松」，2012 年正式擴大轉型</li>
+                  <li><strong>聖山遺產</strong>：2013 年 UNESCO 登錄世界文化遺產「信仰的對象與藝術的源泉」</li>
+                  <li><strong>地理環境</strong>：日本山梨縣富士五湖精華區（環繞河口湖與西湖雙湖畔）</li>
+                  <li><strong>兩日嘉年華</strong>：2026 第 15 屆首度升級兩日賽制，分日舉行絕景跑與全馬賽事</li>
+                  <li><strong>絕景指標</strong>：大石公園眺望經典「逆富士」倒影與 1.5 公里楓葉迴廊橘紅秋色</li>
+                </ul>
+                <div class="metric-chip-row">
+                  <span class="metric-chip">世界文化遺產</span>
+                  <span class="metric-chip">雙湖賽道</span>
+                  <span class="metric-chip">逆富士絕景</span>
+                </div>
+              </div>
+              <div class="card-highlight">
+                UNESCO 世界文化遺產 ｜ 日本最具代表性的景觀聖山馬拉松
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🌍 跑旅核心精神</span>
+                <span class="card-tag">初冬楓紅</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>聖山巡禮</strong>：在初冬冷冽澄澈的空氣中，抬頭仰望白雪覆頂的富士山神聖英姿</li>
+                  <li><strong>激坂考驗</strong>：21 公里處直面約 1.5 公里連續陡升「心碎坡」，征服西湖秘境</li>
+                  <li><strong>溫泉舒緩</strong>：賽後漫步河口湖溫泉街，享用山梨熱呼呼鄉土麵「餺飥（Hoto）」</li>
+                  <li><strong>多元組別</strong>：全馬（6 小時）、環湖組 17K（3 小時）、慈善跑 10.5K 與絕景跑 4K/8K</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                雙湖環抱聖山倒影 ｜ 兼具極致湖畔美景與 21km 激坂心碎坡挑戰
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/fuji_01.jpg" alt="富士山馬拉松 河口湖與富士山倒影" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗻</div>
+              <strong>富士聖山與河口湖逆富士</strong>
+              <div class="image-fallback-text">圖片路徑：images/fuji_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：河口湖大石公園 ｜ 跑者遠眺白雪冠頂的富士山與湖面倒影「逆富士」</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-slide="2" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">📋 賽事基本資訊</div>
+        <h1 class="slide-title">競賽規程與規格矩陣</h1>
+        <div class="slide-subtitle">11 月底深秋初冬開跑，雙湖環繞賽道與 6 小時全馬關門限時</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⏱️ 舉辦時程與組別</span>
+              <span class="card-tag">兩日嘉年華</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>舉辦時間</strong>：每年 11 月下旬至 12 月初（深秋楓紅交替初冬時節）</li>
+                <li><strong>全程馬拉松</strong>：42.195 km，時間限制 6 小時（主賽事日週日）</li>
+                <li><strong>環湖組 17K</strong>：時間限制 3 小時，沿河口湖平緩賽道，適中級跑者</li>
+                <li><strong>慈善跑 10.5K</strong>：時間限制 2 小時，聚焦河口湖周邊景觀與公益回饋</li>
+                <li><strong>富士山絕景跑</strong>：4K / 8K（賽前一日週六），無競速限制，適合親子</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">全馬限時 6 小時</span>
+                <span class="metric-chip">環湖組 17K</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">⛰️ 垂直爬升與海拔</span>
+              <span class="card-tag">激坂心碎坡</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>河口湖段（0~20 km）</strong>：海拔約 830 公尺，沿湖起伏小，平緩好配速</li>
+                <li><strong>心碎坡（20~23 km）</strong>：21 km 處面臨連續陡升「心碎坡」，高差顯著</li>
+                <li><strong>西湖環湖（23~35 km）</strong>：海拔約 900 公尺，氣溫低 1°C~2°C，風寒明顯</li>
+                <li><strong>回程下坡（35~42 km）</strong>：西湖下坡返回河口湖，注意膝蓋與股四頭肌負荷</li>
+                <li><strong>終點衝刺</strong>：最後 5 公里進入河口湖溫泉街與大橋，觀眾熱情加油</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">海拔 830-900m</span>
+                <span class="metric-chip">21km 心碎坡</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🍂 賽道地貌與補給</span>
+              <span class="card-tag">山梨特產</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>路面狀況</strong>：全程為平整乾淨瀝青柏油公路，路況極佳無泥地碎石</li>
+                <li><strong>特產補給</strong>：產地直送高級麝香葡萄、新鮮時令水果與沖繩黑糖麵包</li>
+                <li><strong>熱能暖湯</strong>：低溫賽道後段提供熱呼呼的日式味噌湯與日式點心補糖</li>
+                <li><strong>景觀地標</strong>：途經楓葉迴廊、大石公園、西湖里根場與河口湖大橋</li>
+                <li><strong>攝影熱點</strong>：北岸步道與湖畔大橋為拍攝富士山最佳視角，吸引跑者留影</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">麝香葡萄</span>
+                <span class="metric-chip">熱味噌湯補給</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📝 報名管道與物資</span>
+              <span class="card-tag">先著順制</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>海外先著順</strong>：官網每年春夏開放海外跑者名額，先到先得額滿為止</li>
+                <li><strong>保證套裝</strong>：合作平台（如 AsiaYo）提供「名額 + 住宿 + 接駁巴士」套裝</li>
+                <li><strong>新宿領物點</strong>：賽前數日於東京新宿旗艦店（Alpen TOKYO）提早領物</li>
+                <li><strong>會場領取</strong>：賽前一日及賽晨於河口湖主會場設有物資領取帳篷</li>
+                <li><strong>晶片計時</strong>：號碼布晶片感應，全馬完賽獲特製立體富士山造型獎牌</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">先到先得</span>
+                <span class="metric-chip">新宿提早領物</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-slide="3" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">⚡ 賽道結構與魔王路段</div>
+        <h1 class="slide-title">21 公里心碎坡（激坂）與西湖風寒挑戰</h1>
+        <div class="slide-subtitle">突破約 1.5 公里連續高差陡坡，頂住西湖低溫風寒與回程長下坡</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🗺️ 賽道分段結構剖析</span>
+                <span class="card-tag">全馬 42.195 km</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>河口湖晨跑（0~20 km）</strong>：沿湖岸平緩展開，大石公園欣賞聖山「逆富士」倒影</li>
+                  <li><strong>心碎坡攻堅（20~23 km）</strong>：由河口湖切入西湖，1.5 公里急遽陡升，全線最大難關</li>
+                  <li><strong>西湖幽靜環線（23~35 km）</strong>：海拔較高人煙稀少，湖風強勁風寒顯著，考驗意志力</li>
+                  <li><strong>重返河口湖下坡（35~38 km）</strong>：急下坡考驗股四頭肌，控制步頻避免膝關節過載</li>
+                  <li><strong>溫泉街最後衝刺（39~42.195 km）</strong>：跨越河口湖大橋，穿越楓紅溫泉街直抵終點</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                飽覽富士五湖雙湖水色 ｜ 克服心碎坡激坂的心理與體能雙重考驗
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🛑 魔王路段：21 km 心碎坡與西湖低溫</span>
+                <span class="card-tag">爬坡與風寒</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>心碎坡（激坂）</strong>：短距離連續陡升，嚴禁盲目加速硬衝，縮小步幅調勻呼吸節奏</li>
+                  <li><strong>西湖低溫風寒</strong>：西湖氣溫較河口湖低 1°C~2°C 且無遮蔽，出汗後極易遭遇失溫風險</li>
+                  <li><strong>下坡離心防護</strong>：由西湖下切回河口湖的長下坡，肌肉疲勞下易抽筋，步幅微收穩踩</li>
+                  <li><strong>關門時間意識</strong>：全馬限時 6 小時，心碎坡頂點與西湖各檢查點需保留 15~20 分鐘餘裕</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                心碎坡主動縮短步幅 ｜ 西湖段戴上防風手套與頭帶防止失溫
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/fuji_02.jpg" alt="富士山馬拉松 21公里心碎坡與紅葉迴廊" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🍁</div>
+              <strong>心碎坡激坂與紅葉迴廊</strong>
+              <div class="image-fallback-text">圖片路徑：images/fuji_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：西湖連接段心碎坡 ｜ 跑者克服 21 公里激坂陡坡穿越楓紅掩映的林道</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-slide="4" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎟️ 報名資格與搶票攻略</div>
+        <h1 class="slide-title">先著順名額、保證套裝與新宿領物</h1>
+        <div class="slide-subtitle">官方海外名額先到先得，新宿提早領物與河口湖住宿整合套裝</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🌐 官方海外先著順報名</span>
+              <span class="card-tag">先到先得</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>報名方式</strong>：透過富士山馬拉松官方英文/繁中報名網頁登錄</li>
+                <li><strong>先著順機制</strong>：採先到先得原則，不需抽籤，額滿立即關閉報名</li>
+                <li><strong>開放時程</strong>：通常於每年 5 月至 6 月正式開放海外跑者申請</li>
+                <li><strong>組別選擇</strong>：全馬 42.195K、環湖組 17K、慈善跑 10.5K、絕景跑 4K/8K</li>
+                <li><strong>費用包含</strong>：號碼布、計時晶片、原創紀念 T 恤與富士山造型獎牌</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">海外先著順</span>
+                <span class="metric-chip">無須抽籤</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🏨 合作平台保證套裝</span>
+              <span class="card-tag">機酒接駁</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>平台合作</strong>：AsiaYo 等海外跑旅機構提供保證參賽名額整合套裝</li>
+                <li><strong>整合方案</strong>：包含「保證名額 + 河口湖/東京飯店 + 專屬直達巴士」</li>
+                <li><strong>解決住宿痛點</strong>：河口湖賽事週末飯店極難預訂，套裝確保優質住宿</li>
+                <li><strong>免煩惱交通</strong>：免除自行搶購富士急行鐵道或高速巴士車票的困擾</li>
+                <li><strong>適合對象</strong>：首次造訪富士五湖、攜帶眷屬同行或希望無憂參賽者</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">保證參賽權</span>
+                <span class="metric-chip">專屬巴士接送</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📦 新宿 Alpen 提早領物</span>
+              <span class="card-tag">東京領取</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>新宿領取點</strong>：賽前 3 至 4 天於東京新宿 Alpen TOKYO 旗艦店設置</li>
+                <li><strong>海外跑者便利</strong>：抵達東京後可直接在新宿領取號碼布與計時晶片</li>
+                <li><strong>避免會場擁擠</strong>：在新宿提前領物後，賽事當天抵達河口湖免排隊</li>
+                <li><strong>必備憑證</strong>：出示官方確認信 Email（QR Code）與個人護照正本</li>
+                <li><strong>裝備補齊</strong>：旗艦店現場可採購補給能量膠、防寒手套、耳罩與防磨膏</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">Alpen TOKYO</span>
+                <span class="metric-chip">賽前東京領物</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🎪 河口湖大會會場領物</span>
+              <span class="card-tag">主會場報到</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>會場地點</strong>：河口湖大池公園（主會場 Event Plaza）</li>
+                <li><strong>領物時間</strong>：週六 13:00~19:00 及賽事當晨（週日）07:00~08:30</li>
+                <li><strong>嘉年華活動</strong>：週六設有運動攤位、富士山特色紀念品與舞台活動</li>
+                <li><strong>物資領取</strong>：領取號碼布、計時晶片、賽事手冊與專用寄物袋</li>
+                <li><strong>提醒事項</strong>：賽晨領物人潮眾多，強烈建議於新宿或週六提早完成</li>
+              </ul>
+              <div class="metric-chip-row">
+                <span class="metric-chip">大池公園會場</span>
+                <span class="metric-chip">建議提早報到</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-slide="5" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">🚗 交通住宿與領物寄物</div>
+        <h1 class="slide-title">東京直達交通、溫泉飯店與起終點物流</h1>
+        <div class="slide-subtitle">新宿高速巴士與富士回遊列車，河口湖住宿熱區與大會寄物袋</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🚆 東京前往河口湖三大交通</span>
+              <span class="card-tag">直達攻略</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>高速巴士</strong>：新宿轉運站（Busta Shinjuku）直達河口湖站，車程約 2.5 小時</li>
+                <li><strong>特急「富士回遊」</strong>：新宿直達河口湖免轉車特急列車，車程約 1 小時 55 分（全指定席）</li>
+                <li><strong>一般鐵路</strong>：搭乘 JR 中央線至大月站，轉乘富士急行線直達河口湖站</li>
+                <li><strong>塞車預警</strong>：賽事當天公路易塞車，強烈建議搭乘鐵路或賽前一天抵達</li>
+                <li><strong>大會接駁車</strong>：大會於富士急樂園及北麓停車場設有免費接駁專車</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              富士回遊特急需提早 1 個月搶票 ｜ 建議賽前一天進駐
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">♨️ 河口湖住宿區域推薦</span>
+              <span class="card-tag">溫泉度假</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>河口湖溫泉街</strong>：緊鄰終點會場與溫泉，賽後泡湯最享受，需提早半年預訂</li>
+                <li><strong>富士急樂園周邊</strong>：商務飯店林立，有大會接駁巴士直達河口湖主會場</li>
+                <li><strong>富士吉田市區</strong>：生活機能便利，搭乘富士急行線電車數站直達河口湖</li>
+                <li><strong>湖畔景觀名宿</strong>：秀峰閣湖月、湖山亭等名宿直面富士山逆富士，極致享受</li>
+                <li><strong>早餐應對</strong>：賽晨 06:00 起床，提前確認飯店提早早餐或前晚備妥飯糰</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              賽後享受富士山露天溫泉 ｜ 舒緩長跑肌肉疲倦
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">📦 終點寄物與賽後動線</span>
+              <span class="card-tag">會場動線</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>專用寄物袋</strong>：領物時發放官方專用透明寄物袋，黏貼號碼貼紙於指定區域</li>
+                <li><strong>起點寄物區</strong>：主會場大池公園設有大型寄物帳篷，開賽前 45 分鐘截止收件</li>
+                <li><strong>隨身禦寒</strong>：寄物完成後至起跑前，身著拋棄式透明雨衣於分區防寒</li>
+                <li><strong>完賽領取</strong>：衝線領取完賽獎牌、運動飲料後，依指引迅速領取寄物袋</li>
+                <li><strong>更衣帳篷</strong>：會場設有男女更衣帳篷，完賽後立即換穿羽絨外套防止著涼</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              起跑與終點同在河口湖 ｜ 賽後迅速更換厚保暖衣物
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-slide="6" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">🎒 跑步裝備、補給與氣候應變</div>
+        <h1 class="slide-title">初冬低溫防寒、洋蔥穿搭與特色補給</h1>
+        <div class="slide-subtitle">應對清晨 -4°C 至中午 10°C 溫差，輕量公路鞋與麝香葡萄味噌湯</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">❄️ 初冬氣候與防寒穿搭</span>
+              <span class="card-tag">零下低溫</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>嚴峻溫差</strong>：清晨氣溫常驟降至 -4°C 至 2°C，中午陽光下回升至 8°C~12°C</li>
+                <li><strong>起跑前禦寒</strong>：必備拋棄式透明雨衣或舊外套防寒，起跑後投入回收箱</li>
+                <li><strong>末梢保暖</strong>：低溫下肢端容易凍僵，配戴輕量薄手套與防風耳罩保護耳朵</li>
+                <li><strong>核心穿著</strong>：透氣長袖壓縮排汗衣或短袖搭配袖套，隨氣溫靈活調節</li>
+                <li><strong>西湖風寒防護</strong>：西湖段風大溫低，保持手套與頭部保暖防止體溫流失</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              清晨零下低溫 ｜ 拋棄式雨衣、手套與耳罩為必備三件套
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">👟 跑鞋挑選與激坂應對</span>
+              <span class="card-tag">公路競速</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>跑鞋選擇</strong>：全程為平整瀝青柏油路，穿著標準公路競速跑鞋或碳板鞋即可</li>
+                <li><strong>無須越野鞋</strong>：全線無碎石泥地，輕量透氣的公路鞋能大幅降低雙腿負擔</li>
+                <li><strong>爬坡步頻調整</strong>：21 km 心碎坡爬升時，縮小步幅提高步頻，切忌大步硬蹬</li>
+                <li><strong>下坡膝蓋保護</strong>：西湖返回河口湖的長下坡，重心微前傾，避免腳跟重煞</li>
+                <li><strong>防磨膏配置</strong>：初冬乾燥氣候易摩擦，腳趾與大腿內側塗抹防磨膏防起泡</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              標準公路競速鞋 ｜ 心碎坡小碎步推蹬以保護股四頭肌
+            </div>
+          </div>
+
+          <div class="notion-card">
+            <div class="card-header-bar">
+              <span class="card-title">🍇 山梨特產補給與能量</span>
+              <span class="card-tag">熱味噌湯</span>
+            </div>
+            <div class="card-body">
+              <ul class="card-list">
+                <li><strong>麝香葡萄直送</strong>：水站提供山梨縣產頂級麝香葡萄與新鮮香蕉補充維生素</li>
+                <li><strong>熱味噌湯暖身</strong>：後段補給站提供熱騰騰日式味噌湯與黑糖麵包，驅散寒意</li>
+                <li><strong>自備能量膠</strong>：建議自備 4~5 包能量膠，每 45 分鐘定期補充維持血糖濃度</li>
+                <li><strong>定時小口補水</strong>：低溫乾燥下容易忘記喝水，每個水站小口啜飲電解質飲料</li>
+                <li><strong>完賽紀念勳章</strong>：衝線後領取特製立體富士山造型完賽獎牌與完賽毛巾</li>
+              </ul>
+            </div>
+            <div class="card-highlight">
+              麝香葡萄與熱味噌湯 ｜ 頂級日式暖心賽道補給
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-slide="7" data-source="[[日本富士山]]">
+      <div class="slide-header">
+        <div class="notion-pill">🗺️ 賽後觀光與跳轉導航</div>
+        <h1 class="slide-title">富士五湖深度遊與 12 場全覽完結</h1>
+        <div class="slide-subtitle">富士山景觀纜車、楓葉迴廊、餺飥鄉土麵與回到總首頁索引</div>
+      </div>
+
+      <div class="slide-content">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="notion-card featured">
+              <div class="card-header-bar">
+                <span class="card-title">🌟 河口湖周邊名勝與美食</span>
+                <span class="card-tag">聖山觀光</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>天上山全景纜車</strong>：搭乘纜車登頂，俯瞰河口湖與富士山 180 度壯麗全景</li>
+                  <li><strong>河口湖楓葉迴廊</strong>：漫步 1.5 公里楓樹隧道，夜間點燈與白雪富士山相映成趣</li>
+                  <li><strong>忍野八海清泉</strong>：探訪富士山融雪伏流水湧泉，品嚐清涼甘甜泉水與草餅</li>
+                  <li><strong>鄉土料理「餺飥（Hoto）」</strong>：賽後必吃熱騰騰南瓜味噌燉粗麵，徹底溫暖身心</li>
+                </ul>
+              </div>
+              <div class="card-highlight">
+                楓葉迴廊橘紅秋色 ｜ 露天風呂遠眺聖山享用餺飥名物
+              </div>
+            </div>
+
+            <div class="notion-card">
+              <div class="card-header-bar">
+                <span class="card-title">🧭 賽事跳轉導航</span>
+                <span class="card-tag">12 場全滿貫完結</span>
+              </div>
+              <div class="card-body">
+                <ul class="card-list">
+                  <li><strong>完結篇回訪</strong>：恭喜完成 12 場世界必跑絕景馬拉松深度巡禮！</li>
+                  <li><strong>總首頁索引</strong>：點擊返回總首頁索引，查看四大主題分類與 12 場全覽矩陣</li>
+                  <li><strong>隨時探索</strong>：從總首頁隨時跳轉至任何一場夢幻海外跑旅賽事</li>
+                </ul>
+                <div style="display: flex; gap: 10px; margin-top: 0.6rem;">
+                  <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-next-race" style="background: var(--accent-color);">
+                    🏠 返回世界必跑絕景馬拉松首頁索引
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/fuji_03.png" alt="富士山馬拉松 富士山造型完賽獎牌" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>富士山造型完賽獎牌</strong>
+              <div class="image-fallback-text">圖片路徑：images/fuji_03.png</div>
+            </div>
+            <div class="image-caption">圖 3：富士山造型完賽獎牌 ｜ 鑄刻聖山金黃光芒與河口湖雙湖榮耀印記</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[日本富士山]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[日本富士山]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>

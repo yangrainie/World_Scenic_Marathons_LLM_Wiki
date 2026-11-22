@@ -1,0 +1,969 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>德國柏林馬拉松 - 賽事全景導覽</title>
+  <style>
+    :root {
+      /* Notion / Muji Paper Earth-tone Theme */
+      --bg-paper: #F7F6F3;
+      --card-bg: #FFFFFF;
+      --card-bg-subtle: #F1F0EB;
+      --border-color: #E6E3DD;
+      --border-subtle: #ECE9E2;
+      --ink-primary: #2D2925;
+      --ink-secondary: #5F5A54;
+      --ink-tertiary: #8C877E;
+
+      /* Race Theme: 椴樹森綠 (Linden Forest Green) */
+      --accent-color: #3A5A40;
+      --accent-tint: #EEF3EE;
+      --accent-border: #C6D8C6;
+      --accent-highlight: #28402C;
+
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      height: 4px;
+      background: var(--border-subtle);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-color);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slides Deck Container */
+    .slides-deck {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(16px);
+      padding: clamp(1rem, 1.8vw, 1.7rem) clamp(1.8rem, 3.6vw, 3.4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .slide-header {
+      margin-bottom: clamp(0.45rem, 0.8vw, 0.75rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      font-size: clamp(0.88rem, 1.08vw, 0.98rem);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .slide-title {
+      font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.2rem;
+    }
+    .slide-subtitle {
+      font-size: clamp(0.96rem, 1.18vw, 1.1rem);
+      color: var(--ink-secondary);
+    }
+
+    /* Body Container */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      min-height: 0;
+    }
+
+    /* Cards System */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.85rem, 1.25vw, 1.25rem);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: clamp(1.1rem, 1.32vw, 1.26rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: clamp(0.92rem, 1.12vw, 1.05rem);
+      color: var(--ink-secondary);
+      line-height: 1.62;
+      flex: 1;
+    }
+
+    .card-text strong {
+      color: var(--ink-primary);
+    }
+
+    .card-highlight {
+      margin-top: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--accent-color);
+      border-left: 3px solid var(--accent-color);
+      font-weight: 500;
+    }
+
+    /* Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(0.7rem, 1.1vw, 1.1rem);
+    }
+
+    /* Split 2-Column Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(0.9rem, 1.6vw, 1.6rem);
+      align-items: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .split-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      justify-content: safe center;
+      gap: clamp(0.65rem, 1vw, 0.95rem);
+      min-height: 0;
+    }
+
+    .split-col .card {
+      padding: clamp(0.65rem, 1vw, 0.95rem);
+    }
+
+    .split-col .card-title {
+      font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .split-col .card-text {
+      font-size: clamp(0.9rem, 1.05vw, 1rem);
+      line-height: 1.5;
+    }
+
+    /* Image Display Container */
+    .image-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      height: 100%;
+      min-height: 220px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      height: 100%;
+      background: linear-gradient(135deg, var(--card-bg-subtle) 0%, #EBE8E1 100%);
+      color: var(--ink-secondary);
+      gap: 8px;
+    }
+
+    .image-fallback-icon {
+      font-size: 2.2rem;
+      opacity: 0.85;
+    }
+
+    .image-fallback-text {
+      font-size: 0.88rem;
+      color: var(--ink-tertiary);
+    }
+
+    .image-caption {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    /* Metrics Bar */
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.55rem;
+    }
+
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+      color: var(--ink-secondary);
+    }
+
+    .metric-chip strong {
+      color: var(--accent-color);
+      margin-left: 2px;
+    }
+
+    /* Navigation Dock */
+    #bottom-nav {
+      height: 56px;
+      border-top: 1px solid var(--border-color);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.2rem, 3.2vw, 3.2rem);
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+
+    .nav-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav {
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      color: var(--ink-primary);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .nav-tips {
+      font-size: 0.82rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd {
+      padding: 2px 6px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-paper);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: var(--accent-tint);
+      border-color: var(--accent-border);
+      color: var(--accent-color);
+    }
+
+    .traceability-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .traceability-pill strong {
+      color: var(--accent-color);
+    }
+
+    /* Jump Button in Slide 7 */
+    .jump-box {
+      margin-top: 0.65rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .jump-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--accent-tint);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .jump-btn:hover {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 900px) {
+      .grid-4, .grid-3, .split-layout { grid-template-columns: 1fr; }
+      .nav-tips { display: none; }
+    }
+    /* Route Map Specific Style (Slide 3) - Never Cropped */
+    .route-map-panel {
+      background: #FFFFFF !important;
+    }
+    .route-map-panel img,
+    .image-panel img.route-map {
+      object-fit: contain !important;
+      background: #FFFFFF !important;
+      padding: clamp(6px, 1vw, 12px) !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+
+  <!-- Slides Deck Container -->
+  <main class="slides-deck" id="deck">
+
+    <!-- ==========================================
+         SLIDE 1: 賽事名片與封面
+         ========================================== -->
+    <section class="slide active" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏛️ 賽事名片 ｜ 世界紀錄殿堂</span>
+        <h1 class="slide-title">德國柏林馬拉松 (BMW Berlin Marathon)</h1>
+        <p class="slide-subtitle">世界馬拉松大滿貫 (WMM) 核心成員 ｜ 全球公認最速賽道與破紀錄傳奇舞台</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">📜 賽事定位與世界紀錄工廠</div>
+              <div class="metrics-row">
+                <span class="metric-chip">• 六大滿貫<strong>WMM</strong></span>
+                <span class="metric-chip">• 世界田總<strong>白金標</strong></span>
+                <span class="metric-chip">• 世界紀錄<strong>13次誕生</strong></span>
+                <span class="metric-chip">• 賽期<strong>每年 9 月底</strong></span>
+              </div>
+              <p class="card-text">
+                創始於 1974 年，於每年 9 月最後一個星期日舉行。憑藉其近乎絕對平坦的柏油路況、筆直長街與初秋 12°C 至 18°C 的清涼氣候，成為人類史上誕生全馬世界紀錄次數最多的終極速道殿堂。
+              </p>
+              <div class="card-highlight">
+                渴望打破個人最佳成績（PB）與六星完賽勳章（Six-Star Medal）跑者不可錯過的朝聖地。
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🌟 三大核心特色摘要</div>
+              <p class="card-text">
+                • <strong>極速筆直賽道</strong>：總爬升僅約 35 公尺，寬闊道路直通歷史核心。<br>
+                • <strong>歷史破牆見證</strong>：自 1990 年起跑者歷史性穿過布蘭登堡門，象徵東西德統一融合。<br>
+                • <strong>全民敲鍋應援</strong>：沿線數十萬市民敲打鍋碗瓢盆與管樂演奏，熱烈聲浪震撼全城。
+              </p>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/berlin_01.jpg" alt="德國柏林馬拉松 封面實景" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏛️</div>
+              <strong>布蘭登堡門萬人衝線盛況</strong>
+              <div class="image-fallback-text">圖片路徑：images/berlin_01.jpg</div>
+            </div>
+            <div class="image-caption">圖 1：穿越布蘭登堡門的榮耀衝線 ｜ 最速大滿貫殿堂</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: 賽事基本資訊
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">📋 規格認證 ｜ 基本資訊</span>
+        <h2 class="slide-title">賽事基本資訊與核心規格</h2>
+        <p class="slide-subtitle">極低坡度與涼爽秋候，造就全球跑者公認難度最低的競速黃金賽道</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">⏱️ 賽事時程與限時</div>
+            <p class="card-text">
+              • <strong>舉辦月份</strong>：每年 9 月最後一個星期日。<br>
+              • <strong>關門限時</strong>：6 小時 15 分鐘。<br>
+              • <strong>參賽規模</strong>：逾 45,000 名跑者。
+            </p>
+            <div class="card-highlight">
+              初秋涼爽微風，極利於體溫調節與長途續航。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📈 海拔落差與坡度</div>
+            <p class="card-text">
+              • <strong>累計爬升</strong>：約 35 公尺。<br>
+              • <strong>累計下降</strong>：約 37 公尺。<br>
+              • <strong>平均坡度</strong>：全線接近 0% 絕對平坦。
+            </p>
+            <div class="card-highlight">
+              海拔起伏微乎其微，完美釋放雙腿推蹬效率。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏃 賽道地形與難度</div>
+            <p class="card-text">
+              • <strong>路面屬性</strong>：極平整寬闊柏油大道。<br>
+              • <strong>難度分級</strong>：初級（最速賽道）。<br>
+              • <strong>完賽率</strong>：歷年高達 97% 以上。
+            </p>
+            <div class="card-highlight">
+              世界紀錄製造機，個人破 PB 率最高殿堂。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏅 國際組織認證標籤</div>
+            <p class="card-text">
+              • <strong>標籤認證</strong>：世界田總白金標籤。<br>
+              • <strong>聯盟體系</strong>：Abbott WMM 六大滿貫。<br>
+              • <strong>資格採納</strong>：成績獲 AIMS 及波士頓 BQ 認證。
+            </p>
+            <div class="card-highlight">
+              國際最高規格田徑賽事公信力。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: 賽道結構與魔王路段
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🗺️ 賽道路況 ｜ 魔王路段</span>
+        <h2 class="slide-title">賽道結構與關鍵魔王路段剖析</h2>
+        <p class="slide-subtitle">六月十七日大街環抱起跑，穿越歷史行政區與終點前的心理幻影考驗</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">🧭 四大分段歷史巡禮</div>
+              <p class="card-text">
+                • <strong>0-10km（林蔭開局）</strong>：蒂爾加滕公園出發，繞行勝利紀念柱與國會大廈。<br>
+                • <strong>10-25km（文藝行政區）</strong>：穿越夏洛滕堡與腓特烈斯海恩，街區人群自發演奏管樂應援。<br>
+                • <strong>25-35km（南區折返）</strong>：行經克羅伊茨貝格與舍訥貝格，進入最考驗配速耐力的沉穩期。<br>
+                • <strong>35-42.195km（榮耀大道）</strong>：折回菩提樹下大道，直視布蘭登堡門最後加速。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">⚠️ 魔王路段：40-41km「望門興嘆」幻影盲區</div>
+              <p class="card-text">
+                • <strong>痛點剖析</strong>：柏林賽道無地形陡坡，最大考驗來自「心理距離幻象」。在 41km 穿過宏偉的布蘭登堡門時，多數新手誤以為衝線已至而提前放鬆力竭。<br>
+                • <strong>通關策略</strong>：切記穿過布蘭登堡門後，距離真正終點線仍有約 400 公尺！需保持衝刺節奏直至踏過計時毯。
+              </p>
+              <div class="card-highlight">
+                跨過城門看清計時拱門，以最堅定的姿態享受歡呼！
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel route-map-panel">
+            <img class="route-map" style="object-fit: contain; background: #FFFFFF; padding: clamp(6px, 1vw, 12px);" src="images/berlin_02.jpg" alt="德國柏林馬拉松 路線圖" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🗺️</div>
+              <strong>柏林賽道全景圖與歷史路段</strong>
+              <div class="image-fallback-text">圖片路徑：images/berlin_02.jpg</div>
+            </div>
+            <div class="image-caption">圖 2：柏林馬拉松 42.195 公里歷史環狀賽道導覽</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: 報名資格與搶票攻略
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🎫 資格門檻 ｜ 搶票攻略</span>
+        <h2 class="slide-title">報名管道與搶票四大途徑</h2>
+        <p class="slide-subtitle">年度必搶的大滿貫席位：掌握公眾抽籤、團隊保障、BQ 成績直通與慈善保額</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-title">🎲 1. 公眾個人抽籤</div>
+            <p class="card-text">
+              • <strong>登記時程</strong>：每年 9 月底至 11 月初。<br>
+              • <strong>抽籤公布</strong>：每年 11 月底電郵通知。<br>
+              • <strong>報名費用</strong>：約 205 歐元。<br>
+              • <strong>中籤特性</strong>：全球競爭，中籤直接扣款。
+            </p>
+            <div class="card-highlight">
+              最經典的大眾參與途徑，登記免手續費。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">👥 2. 雙人或三人團隊抽籤</div>
+            <p class="card-text">
+              • <strong>運作機制</strong>：2 至 3 人組隊同進同退。<br>
+              • <strong>隊伍代碼</strong>：隊長建隊後發送代碼加入。<br>
+              • <strong>錄取規則</strong>：一人中籤則全員中籤。<br>
+              • <strong>適合對象</strong>：跑友結伴或情侶出賽。
+            </p>
+            <div class="card-highlight">
+              免除同伴一人中籤一人落選的旅行尷尬。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">⚡ 3. 速度門檻直通 (Fast Runner)</div>
+            <p class="card-text">
+              • <strong>認證賽事</strong>：AIMS 或 WMM 分齡採納賽事。<br>
+              • <strong>≤44歲標準</strong>：男 &lt;2:45，女 &lt;3:10。<br>
+              • <strong>45-59歲</strong>：男 &lt;2:55，女 &lt;3:30。<br>
+              • <strong>≥60歲</strong>：男 &lt;3:25，女 &lt;4:20。
+            </p>
+            <div class="card-highlight">
+              上傳合格成績證明即可免抽籤直通保送。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">💖 4. 慈善與官方旅行社</div>
+            <p class="card-text">
+              • <strong>官方慈善</strong>：向指定合作機構捐款取得名額。<br>
+              • <strong>旅行社套裝</strong>：購買授權旅行社機加酒套裝。<br>
+              • <strong>優勢</strong>：100% 參賽確定性。<br>
+              • <strong>成本</strong>：套票成本高於標準報名費。
+            </p>
+            <div class="card-highlight">
+              抽籤向隅跑者鎖定名額的最穩健保險渠道。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: 交通住宿與領物寄物
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🚆 後勤物流 ｜ 起終點動線</span>
+        <h2 class="slide-title">交通後勤、住宿選址與 Expo 領物</h2>
+        <p class="slide-subtitle">起終點同區之環狀物流優勢：掌握閘門分流與大滿貫博覽會要領</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">📍 起終點交通與動線</div>
+            <p class="card-text">
+              • <strong>起跑與終點</strong>：皆位於蒂爾加滕公園六月十七日大街與布蘭登堡門周邊。<br>
+              • <strong>公共交通</strong>：搭乘柏林城鐵 S-Bahn 或地鐵 U-Bahn 至周邊站點步行抵達。<br>
+              • <strong>管制注意事項</strong>：起跑區實施極為嚴格的安全防線，直線距離不等於步行時間，務必提早 90 分鐘到達專屬閘門。
+            </p>
+            <div class="card-highlight">
+              環狀動線免去越洋行李折返轉運的繁瑣。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🏨 住宿選址精準策略</div>
+            <p class="card-text">
+              • <strong>首選 A 區（Tiergarten 鄰近區）</strong>：起終點徒步即可往返，賽後最省體力。<br>
+              • <strong>首選 B 區（Mitte 米特區）</strong>：近布蘭登堡門與菩提樹下大道，交通生活機能極佳。<br>
+              • <strong>後勤要點</strong>：訂房時務必向飯店確認是否提供週日比賽「延後退房（Late Check-out）」或完賽沐浴寄存。
+            </p>
+            <div class="card-highlight">
+              賽事週末全城房源緊繃，建議中籤後即刻預訂。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📦 Expo 領物與週邊嘉年華</div>
+            <p class="card-text">
+              • <strong>博覽會地點</strong>：柏林舊騰珀爾霍夫機場（Flughafen Tempelhof）。<br>
+              • <strong>領物規範</strong>：本人持護照與確認函現場手環佩戴核驗，嚴禁代領。<br>
+              • <strong>特色活動</strong>：賽前一日清晨舉行全城「早餐跑（Breakfast Run）」，賽前更有國際直排輪競速賽，展現多元包容。
+            </p>
+            <div class="card-highlight">
+              舊機場跑道改建之 Expo 氣勢磅礡，值得預留半日參訪。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: 跑步裝備、補給與氣候應變
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🏃 實戰準備 ｜ 裝備與補給</span>
+        <h2 class="slide-title">氣候數據、跑鞋推薦與賽事補給</h2>
+        <p class="slide-subtitle">秋高氣爽的競速體感，配合碳板競速鞋發揮極速賽道極限潛能</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-title">🌡️ 歷年氣候統計數據</div>
+            <p class="card-text">
+              • <strong>氣溫區間</strong>：12°C 至 18°C（體感極為舒適乾爽）。<br>
+              • <strong>降雨機率</strong>：秋季少雨，多為多雲或晴朗好天氣。<br>
+              • <strong>風速情況</strong>：市中心林蔭街道有效阻擋側風，氣流穩定。<br>
+              • <strong>起跑體感</strong>：清晨稍具涼意，起步後迅速進入體能巡航甜蜜點。
+            </p>
+            <div class="card-highlight">
+              被頂尖跑者譽為全球最利於長跑散熱的完美氣候。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">👟 跑鞋挑選與裝備策略</div>
+            <p class="card-text">
+              • <strong>競速跑鞋首選</strong>：全平坦優質柏油路面，極度適合高回彈厚底碳板跑鞋。<br>
+              • <strong>上身穿著</strong>：輕量排汗背心或短袖短褲即可，無需厚重保暖層。<br>
+              • <strong>起跑防風</strong>：9 月清晨集合等待區微涼，可備一件舊長袖或雨衣保暖。<br>
+              • <strong>防磨保護</strong>：腋下與大腿內側塗抹凡士林，應對高配速摩擦。
+            </p>
+            <div class="card-highlight">
+              賽道寬坦無碎石，是檢驗碳板神鞋的最佳考場。
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🍵 大會補給與自備戰術</div>
+            <p class="card-text">
+              • <strong>官方水站</strong>：每 5 公里設有水、電解質運動飲料與熱茶補給站。<br>
+              • <strong>能量膠配置</strong>：大會於後半程特定站點提供能量膠，但建議全程自備熟悉之品牌。<br>
+              • <strong>能量補給節奏</strong>：平坦路段易不知不覺拉快配速，建議每 8-10km 固定補充能量膠與水分。<br>
+              • <strong>完賽啤酒</strong>：終點提供德國特色無酒精清涼啤酒慶功。
+            </p>
+            <div class="card-highlight">
+              配速越穩，越能在 35km 後維持體能不掉速。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: 賽後觀光與跳轉導航
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill">🌸 賽後巡禮 ｜ 導航跳轉</span>
+        <h2 class="slide-title">賽後文化巡禮與系列下一站</h2>
+        <p class="slide-subtitle">掛上沉甸甸的完賽獎牌，暢飲德國黑啤、品嘗烤豬腳，啟航下一場歷史賽事</p>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout">
+          <div class="split-col">
+            <div class="card">
+              <div class="card-title">♨️ 完賽慶功與柏林深度慢旅</div>
+              <p class="card-text">
+                • <strong>德式傳統盛宴</strong>：賽後換裝前往市中心經典餐廳，大啖酥脆德國烤豬腳（Schweinshaxe）與純釀小麥啤酒。<br>
+                • <strong>柏林圍牆東邊畫廊</strong>：翌日漫步殘存圍牆藝術長廊，沉浸式回味這座自由之城的歷史重生。<br>
+                • <strong>博物館島排酸漫步</strong>：遊覽佩加蒙博物館與柏林大教堂，以慢步動態排酸，享受秋日德意志美景。
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🧭 知識圖譜雙向導航系統</div>
+              <p class="card-text">
+                告別速度殿堂柏林，下一站將帶您前往大西洋彼岸、慈善氛圍與群眾應援堪稱世界之最的英倫賽事！
+              </p>
+              <div class="jump-box">
+                <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="jump-btn">
+                  <span>🏠 返回總首頁索引</span>
+                  <span>➔</span>
+                </a>
+                <a href="倫敦馬拉松.html" class="jump-btn">
+                  <span>➡️ 下一站：英國倫敦馬拉松</span>
+                  <span>➔</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-panel">
+            <img src="images/berlin_03.jpg" alt="德國柏林馬拉松 完賽風采" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="display: none;">
+              <div class="image-fallback-icon">🏅</div>
+              <strong>完賽獎牌與大滿貫六星榮耀</strong>
+              <div class="image-fallback-text">圖片路徑：images/berlin_03.jpg</div>
+            </div>
+            <div class="image-caption">圖 3：柏林馬拉松沉甸甸的完賽獎牌 ｜ 破紀錄聖地榮耀證書</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION DOCK
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">07</span>
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd">←</span> <span class="kbd">→</span> 鍵盤切換
+        <span class="kbd" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="00_世界必跑絕景馬拉松_首頁索引.html" class="btn-home" title="返回總首頁索引">
+        🏠 回首頁索引
+      </a>
+      <div class="traceability-pill" id="traceability-pill">
+        <span>📚 資料來源：</span>
+        <strong id="source-name">[[德國柏林馬拉松]]</strong>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[德國柏林馬拉松]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Initialize
+      updateSlide(0);
+    });
+  </script>
+</body>
+</html>
