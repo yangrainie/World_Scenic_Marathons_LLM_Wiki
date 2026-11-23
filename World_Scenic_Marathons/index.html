@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>世界必跑絕景馬拉松 ｜ Markdown Wiki 筆記庫</title>
+  <style>
+    :root {
+      --bg-page: #f7f6f3;
+      --bg-card: #ffffff;
+      --border-subtle: #e6e3dd;
+      --border-hover: #d2cec6;
+      --ink-primary: #2d2925;
+      --ink-secondary: #5f5a54;
+      --ink-tertiary: #8f8981;
+      --accent-forest: #3c5a45;
+      --accent-tint: #eaf1ec;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-page);
+      color: var(--ink-primary);
+      font-family: var(--font-stack);
+      padding: 2.5rem 1.5rem;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .header {
+      margin-bottom: 2rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--accent-tint);
+      color: var(--accent-forest);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    p.desc {
+      color: var(--ink-secondary);
+      font-size: 1rem;
+    }
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 1.5rem 0 2rem 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--ink-primary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      border-color: var(--border-hover);
+      background: #faf9f6;
+    }
+    .btn-primary {
+      background: var(--accent-forest);
+      color: #ffffff;
+      border-color: var(--accent-forest);
+    }
+    .btn-primary:hover {
+      background: #2e4635;
+      color: #ffffff;
+    }
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .note-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--ink-primary);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .note-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-forest);
+    }
+    .note-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .note-tag {
+      font-size: 0.8rem;
+      color: var(--ink-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="pill">📖 專屬知識庫 ｜ Markdown Wiki</span>
+      <h1>世界必跑絕景馬拉松 筆記庫</h1>
+      <p class="desc">
+        本資料夾為專屬 Markdown 知識庫（Obsidian 筆記），建議直接在 GitHub 倉庫中閱讀排版完整的雙向鏈結筆記。
+      </p>
+      <div class="action-bar">
+        <a href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/tree/main/World_Scenic_Marathons" class="btn btn-primary" target="_blank">
+          📂 在 GitHub 倉庫檢視本資料夾（推薦）
+        </a>
+        <a href="../World_Scenic_Marathons_HTML/00_世界必跑絕景馬拉松_首頁索引.html" class="btn">
+          🖥️ 前往 HTML 互動簡報系統
+        </a>
+        <a href="../" class="btn">
+          🏠 返回專案首頁 (README)
+        </a>
+      </div>
+    </div>
+
+    <h2 style="font-size: 1.25rem; margin-bottom: 12px; font-weight: 700;">📚 Wiki 筆記清單（點擊直接在 GitHub 開啟閱讀）</h2>
+    <div class="notes-grid">
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/00_世界必跑絕景馬拉松_首頁索引.md" target="_blank">
+        <div class="note-title">🏠 00_世界必跑絕景馬拉松_首頁索引</div>
+        <div class="note-tag">Wiki 總首頁與知識地圖</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/世界馬拉松大滿貫與經典城市賽道.md" target="_blank">
+        <div class="note-title">🏛️ 世界馬拉松大滿貫與經典城市賽道</div>
+        <div class="note-tag">主題樞紐 01 ｜ 都會競速</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/極限地形與山岳沙漠挑戰.md" target="_blank">
+        <div class="note-title">⛰️ 極限地形與山岳沙漠挑戰</div>
+        <div class="note-tag">主題樞紐 02 ｜ 爬升與荒漠</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/世界遺產與自然荒野賽道.md" target="_blank">
+        <div class="note-title">🌿 世界遺產與自然荒野賽道</div>
+        <div class="note-tag">主題樞紐 03 ｜ UNESCO 古蹟</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/全球四季跑旅日曆.md" target="_blank">
+        <div class="note-title">📅 全球四季跑旅日曆</div>
+        <div class="note-tag">主題樞紐 04 ｜ 1~12月賽程</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/日本東京馬拉松.md" target="_blank">
+        <div class="note-title">🇯🇵 日本東京馬拉松</div>
+        <div class="note-tag">3月 ｜ 亞洲大滿貫首選</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/羅馬馬拉松.md" target="_blank">
+        <div class="note-title">🇮🇹 義大利羅馬馬拉松</div>
+        <div class="note-tag">3月 ｜ 兩千年露天博物館</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/倫敦馬拉松.md" target="_blank">
+        <div class="note-title">🇬🇧 英國倫敦馬拉松</div>
+        <div class="note-tag">4月 ｜ 最大慈善嘉年華</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/美國大瑟爾國際馬拉松.md" target="_blank">
+        <div class="note-title">🇺🇸 美國大瑟爾國際馬拉松</div>
+        <div class="note-tag">4月 ｜ 太平洋加州公路</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/南非五大野生動物馬拉松.md" target="_blank">
+        <div class="note-title">🇿🇦 南非五大野生動物馬拉松</div>
+        <div class="note-tag">6月 ｜ 無圍欄五霸巨獸</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/吳哥窟王朝馬拉松.md" target="_blank">
+        <div class="note-title">🇰🇭 柬埔寨吳哥窟王朝馬拉松</div>
+        <div class="note-tag">8月 ｜ 千年高棉微笑</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/少女峰馬拉松.md" target="_blank">
+        <div class="note-title">🇨🇭 瑞士少女峰馬拉松</div>
+        <div class="note-tag">9月 ｜ 萬年冰河千米爬升</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/約旦佩特沙漠馬拉松.md" target="_blank">
+        <div class="note-title">🇯🇴 約旦佩特沙漠馬拉松</div>
+        <div class="note-tag">9月 ｜ 玫瑰古城與熱浪軟沙</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/德國柏林馬拉松.md" target="_blank">
+        <div class="note-title">🇩🇪 德國柏林馬拉松</div>
+        <div class="note-tag">9月 ｜ 世界紀錄最快賽道</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/雅典經典馬拉松.md" target="_blank">
+        <div class="note-title">🇬🇷 希臘雅典經典馬拉松</div>
+        <div class="note-tag">11月 ｜ 2500年起源朝聖</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/紐西蘭皇后鎮馬拉松.md" target="_blank">
+        <div class="note-title">🇳🇿 紐西蘭皇后鎮馬拉松</div>
+        <div class="note-tag">11月 ｜ 純淨湖光山色</div>
+      </a>
+      <a class="note-card" href="https://github.com/yangrainie/World_Scenic_Marathons_LLM_Wiki/blob/main/World_Scenic_Marathons/日本富士山.md" target="_blank">
+        <div class="note-title">🇯🇵 日本富士山馬拉松</div>
+        <div class="note-tag">11月 ｜ 湖畔紅葉與逆富士</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
