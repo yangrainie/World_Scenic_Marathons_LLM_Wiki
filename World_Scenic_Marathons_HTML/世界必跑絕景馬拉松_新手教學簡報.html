@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>世界必跑絕景馬拉松：新手海外跑旅第一堂課</title>
+  <style>
+    /* =========================================================
+       CSS RESET & NATURE/MUJI/NOTION PALETTE
+       ========================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    :root {
+      /* Warm Notion / Muji Paper Aesthetic */
+      --bg-page: #f7f6f3;
+      --bg-card: #ffffff;
+      --bg-tag: #eceae5;
+      --bg-highlight: #f3f1ec;
+      
+      --border-subtle: #e6e3dd;
+      --border-hover: #d2cec6;
+      --border-focus: #b45309;
+      
+      /* Natural Earthy Ink Tones */
+      --ink-primary: #2d2925;
+      --ink-secondary: #5f5a54;
+      --ink-tertiary: #8f8981;
+      --ink-dim: #b3ada4;
+      
+      /* Subtle Earth Accents */
+      --accent-forest: #3c5a45;     /* Sage Forest Green */
+      --accent-terracotta: #b85d38; /* Warm Clay Terracotta */
+      --accent-ochre: #a3702c;      /* Muted Amber/Ochre */
+      --accent-slate: #445668;      /* Washed Indigo Slate */
+      
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "Hiragino Sans", "Yu Gothic", sans-serif;
+      --shadow-sm: 0 1px 3px rgba(45, 41, 37, 0.05), 0 1px 2px rgba(45, 41, 37, 0.02);
+      --shadow-md: 0 4px 12px rgba(45, 41, 37, 0.07), 0 2px 4px rgba(45, 41, 37, 0.03);
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--ink-primary);
+      font-family: var(--font-stack);
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle Paper Texture Background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.025;
+      pointer-events: none;
+      background-image: radial-gradient(#2d2925 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+      z-index: 0;
+    }
+
+    /* =========================================================
+       TOP PROGRESS BAR
+       ========================================================= */
+    #progress-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--border-subtle);
+      z-index: 100;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 8.33%;
+      background: var(--accent-forest);
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* =========================================================
+       SLIDES DECK
+       ========================================================= */
+    #deck {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: clamp(2.2rem, 5vh, 3.8rem) clamp(2.5rem, 6.5vw, 6rem);
+      padding-bottom: 5.5rem; /* Room for bottom bar */
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateX(35px) scale(0.99);
+      pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4, 0, 0.2, 1), transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* =========================================================
+       HEADER & NOTION-STYLE PILLS
+       ========================================================= */
+    .slide-header {
+      margin-bottom: clamp(1.1rem, 2.8vh, 1.8rem);
+      flex-shrink: 0;
+    }
+
+    .notion-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: clamp(0.82rem, 1.08vw, 0.92rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: var(--bg-tag);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 0.5rem;
+    }
+    .notion-pill.forest { background: #eaf1ec; color: var(--accent-forest); border-color: #d1dfd4; }
+    .notion-pill.clay { background: #f7ebe6; color: var(--accent-terracotta); border-color: #ebd0c4; }
+    .notion-pill.ochre { background: #f6efe3; color: var(--accent-ochre); border-color: #e8d9c3; }
+
+    .slide-title {
+      font-size: clamp(1.65rem, 3.1vw, 2.35rem);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      color: var(--ink-primary);
+    }
+
+    .slide-subtitle {
+      font-size: clamp(0.95rem, 1.35vw, 1.12rem);
+      color: var(--ink-secondary);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+
+    /* Minimalist Metrics Strip */
+    .metrics-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #ffffff;
+      border-radius: 8px;
+      font-size: clamp(0.88rem, 1.18vw, 1.02rem);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+    }
+    .metric-pill strong {
+      color: var(--ink-primary);
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       CONTENT BODY & NOTION-STYLE CARDS
+       ========================================================= */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .cards-grid {
+      display: grid;
+      gap: clamp(0.9rem, 2vh, 1.4rem);
+      width: 100%;
+    }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* Layout with Optional Image Column */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.5rem;
+      align-items: stretch;
+      width: 100%;
+    }
+    .split-layout.no-image {
+      grid-template-columns: 1fr;
+    }
+
+    /* Image Slot Container */
+    .image-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .image-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 180px;
+      background: #eceae5;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .image-frame img:hover {
+      transform: scale(1.02);
+    }
+    .image-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 1.5rem;
+      color: var(--ink-tertiary);
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .image-caption {
+      font-size: 0.72rem;
+      color: var(--ink-tertiary);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: clamp(1.1rem, 2.2vh, 1.5rem);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: clamp(1.3rem, 2vw, 1.7rem);
+      line-height: 1;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-title {
+      font-size: clamp(1.05rem, 1.42vw, 1.22rem);
+      font-weight: 700;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-text {
+      font-size: clamp(0.88rem, 1.15vw, 0.98rem);
+      color: var(--ink-secondary);
+      line-height: 1.62;
+    }
+    .card-text strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .card-highlight {
+      background: var(--bg-highlight);
+      border-left: 3px solid var(--accent-forest);
+      padding: 0.55rem 0.85rem;
+      border-radius: 0 6px 6px 0;
+      font-size: clamp(0.82rem, 1.05vw, 0.92rem);
+      color: var(--ink-secondary);
+      margin-top: auto;
+      line-height: 1.5;
+    }
+    .card-highlight.clay { border-left-color: var(--accent-terracotta); }
+    .card-highlight.ochre { border-left-color: var(--accent-ochre); }
+
+    /* =========================================================
+       COVER SLIDE (NOTION EDITORIAL)
+       ========================================================= */
+    .cover-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100%;
+      max-width: 860px;
+      gap: 1.25rem;
+    }
+    .cover-tag {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-forest);
+      background: #eaf1ec;
+      padding: 5px 12px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+    .cover-title {
+      font-size: clamp(2.3rem, 4.5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.18;
+      color: var(--ink-primary);
+    }
+    .cover-title span {
+      color: var(--accent-terracotta);
+    }
+    .cover-desc {
+      font-size: clamp(1rem, 1.55vw, 1.22rem);
+      color: var(--ink-secondary);
+      line-height: 1.65;
+    }
+    .cover-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.4rem;
+    }
+    .cover-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+      color: var(--ink-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* =========================================================
+       BOTTOM NAVIGATION DOCK
+       ========================================================= */
+    #bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4.5rem;
+      padding: 0 clamp(2rem, 5.5vw, 5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(247, 246, 243, 0) 0%, rgba(247, 246, 243, 0.96) 35%);
+      z-index: 50;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .page-counter {
+      font-size: clamp(0.85rem, 1.1vw, 0.98rem);
+      font-weight: 600;
+      color: var(--ink-tertiary);
+      font-variant-numeric: tabular-nums;
+    }
+    .page-counter span { color: var(--ink-primary); }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-nav {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      color: var(--ink-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.18s ease;
+    }
+    .btn-nav:hover {
+      background: #fdfdfc;
+      border-color: var(--border-hover);
+      color: var(--accent-forest);
+      transform: translateY(-1px);
+    }
+
+    .nav-tips {
+      font-size: 0.76rem;
+      color: var(--ink-tertiary);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .kbd-shortcut {
+      padding: 2px 6px;
+      background: #ffffff;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      font-family: monospace;
+      color: var(--ink-secondary);
+      font-size: 0.72rem;
+    }
+
+    /* Information Traceability Pill */
+    .traceability-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: clamp(0.72rem, 0.95vw, 0.82rem);
+      color: var(--ink-secondary);
+      box-shadow: var(--shadow-sm);
+    }
+    .traceability-pill strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+      font-family: monospace;
+    }
+
+    @media (max-width: 900px) {
+      .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .grid-2, .split-layout { grid-template-columns: 1fr; }
+      .image-card { display: none; }
+      .nav-tips { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- Main Slide Deck -->
+  <main id="deck">
+
+    <!-- ==========================================
+         SLIDE 1: COVER
+         ========================================== -->
+    <section class="slide active" data-source="[[00_世界必跑絕景馬拉松_首頁索引]]">
+      <div class="cover-container">
+        <span class="cover-tag">🏃 海外跑旅新手特刊 ｜ Wiki 知識庫導覽</span>
+        <h1 class="cover-title">踏出國門，<span>跑向世界</span></h1>
+        <p class="cover-desc">
+          零基礎解鎖全球殿堂級路跑賽事。從六大滿貫的都會狂熱、阿爾卑斯的萬年冰河，到非洲原始大草原，帶你看懂海外馬拉松的核心機制、賽道難度分級與出國實戰規劃。
+        </p>
+        <div class="cover-badges">
+          <div class="cover-pill">🏛️ 4 大跨賽事主題樞紐</div>
+          <div class="cover-pill">🌍 12 場必跑絕景全馬</div>
+          <div class="cover-pill">📅 1-12 月四季跑旅日曆</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: WMM OVERVIEW
+         ========================================== -->
+    <section class="slide" data-source="[[世界馬拉松大滿貫與經典城市賽道]]">
+      <header class="slide-header">
+        <span class="notion-pill forest">概念科普 01 ｜ 賽事殿堂</span>
+        <h2 class="slide-title">什麼是「世界馬拉松大滿貫」（AbbottWMM）？</h2>
+        <p class="slide-subtitle">長跑界的奧斯卡殿堂，全球民間跑者一生爭相朝聖的終極榮譽象徵</p>
+        <div class="metrics-bar">
+          <div class="metric-pill">🏛️ 核心陣容：<strong>全球 6 座名城</strong></div>
+          <div class="metric-pill">🎖️ 終極勳章：<strong>六星完賽獎牌 (Six Star)</strong></div>
+          <div class="metric-pill">🏅 認證規格：<strong>國際田總菁英白金標籤</strong></div>
+        </div>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-icon">🏛️</div>
+            <div class="card-title">六大創始成員賽事</div>
+            <p class="card-text">
+              由<strong>東京</strong>（亞洲唯一）、<strong>波士頓</strong>（歷史最悠久）、<strong>倫敦</strong>、<strong>柏林</strong>、<strong>芝加哥</strong>與<strong>紐約</strong>六場頂級大馬組成。
+            </p>
+            <div class="card-highlight">每年數百萬人登記抽籤，中籤難度堪比名校錄取。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎖️</div>
+            <div class="card-title">傳奇「六星完賽獎牌」</div>
+            <p class="card-text">
+              跑者只要在人生中逐一跑完這六大滿貫，即可獲頒官方<strong>六星完賽獎牌（Six Star Finisher Medal）</strong>，名列全球長跑榮譽名人堂。
+            </p>
+            <div class="card-highlight">全球僅約 1.5 萬名跑者獲此殊榮，為民間跑者無價勳章。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎉</div>
+            <div class="card-title">為何非跑不可的魅力？</div>
+            <p class="card-text">
+              <strong>全城封閉主要幹道</strong>、百萬群眾狂熱吶喊、奧運等級的醫療與補給規格，賽事<strong>平均完賽率常年高達 95% 以上</strong>。
+            </p>
+            <div class="card-highlight">不只是一場比賽，更是整座城市共鳴的跑步嘉年華。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: TERRAIN CLASSIFICATION
+         ========================================== -->
+    <section class="slide" data-source="[[極限地形與山岳沙漠挑戰]]">
+      <header class="slide-header">
+        <span class="notion-pill clay">概念科普 02 ｜ 賽道評估</span>
+        <h2 class="slide-title">賽道地形四級分級：都會路跑 vs. 高山荒漠</h2>
+        <p class="slide-subtitle">新手必須懂得「按圖索驥」，跑鞋裝備與體能必須嚴格匹配賽道地貌</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-icon">🟢</div>
+            <div class="card-title">初級・平坦公路</div>
+            <p class="card-text">
+              <strong>代表</strong>：柏林、東京、倫敦<br>
+              <strong>地貌</strong>：平整寬闊都會柏油路，累計爬升 &lt; 85m。<br>
+              <strong>關鍵</strong>：體能消耗規律，個人最佳成績（PB）搖籃。
+            </p>
+            <div class="card-highlight">新手出國全馬首選賽道。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🟡</div>
+            <div class="card-title">中等・景觀起伏</div>
+            <p class="card-text">
+              <strong>代表</strong>：富士山、皇后鎮、羅馬<br>
+              <strong>地貌</strong>：湖畔丘陵、硬質碎石步道或古城石板路。<br>
+              <strong>關鍵</strong>：短陡坡與地面衝擊大，需強化腳踝肌群。
+            </p>
+            <div class="card-highlight">兼顧自然風景與體力分配。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🟠</div>
+            <div class="card-title">高難度・連續長坡</div>
+            <p class="card-text">
+              <strong>代表</strong>：雅典經典、大瑟爾<br>
+              <strong>地貌</strong>：長達 21km 連續長坡或海岸強烈海風。<br>
+              <strong>關鍵</strong>：強烈的下坡離心收縮，極易引發抽筋與撞牆。
+            </p>
+            <div class="card-highlight clay">需具備扎實爬坡與抗風訓練。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔴</div>
+            <div class="card-title">極高・垂直荒野</div>
+            <p class="card-text">
+              <strong>代表</strong>：少女峰、佩特拉、五大獸<br>
+              <strong>地貌</strong>：高山冰河爬升近 2000m、沙漠軟沙或 43 度陡坡。<br>
+              <strong>關鍵</strong>：完賽時間比平路慢 25%~40%。
+            </p>
+            <div class="card-highlight clay">需搭配登山快走與防砂裝備。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: REGISTRATION MECHANISMS
+         ========================================== -->
+    <section class="slide" data-source="[[世界馬拉松大滿貫與經典城市賽道]]">
+      <header class="slide-header">
+        <span class="notion-pill ochre">概念科普 03 ｜ 參賽攻略</span>
+        <h2 class="slide-title">新手看懂四大報名機制：抽籤、達標 BQ 與套裝</h2>
+        <p class="slide-subtitle">熱門海外馬拉松不是「想報就有」，必須提前 6 至 12 個月啟動規劃</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-icon">🎲</div>
+            <div class="card-title">1. 公眾抽籤 (Ballot)</div>
+            <p class="card-text">
+              <strong>成本最低</strong>（僅需官方報名費），但競爭最激烈。倫敦中籤率僅 1%~2%，東京約 8%。
+            </p>
+            <div class="card-highlight ochre">登記抽籤免費，中籤後自動扣款。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">⏱️</div>
+            <div class="card-title">2. 速度達標 (BQ / GFA)</div>
+            <p class="card-text">
+              依年齡與性別設定嚴格成績門檻（如男子 3h 內）。具備 AIMS 認證紀錄可<strong>免抽籤保證參賽</strong>。
+            </p>
+            <div class="card-highlight ochre">頂尖跑者的速度直通車。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎗️</div>
+            <div class="card-title">3. 慈善名額 (Charity)</div>
+            <p class="card-text">
+              承諾為賽事合作公益機構募款（如倫敦需募款 £2,000+）或直接捐款（東京約 10 萬日圓起）。
+            </p>
+            <div class="card-highlight ochre">名額保證，跑出超越自己的意義。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">✈️</div>
+            <div class="card-title">4. 官方旅行社 (ITO)</div>
+            <p class="card-text">
+              國際授權旅行社推出的<strong>免抽號碼布套裝</strong>（包含起終點星級飯店與專車接駁）。
+            </p>
+            <div class="card-highlight ochre">費用最高，但免去抽籤與住宿煩惱。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: CASE 1 - BERLIN
+         ========================================== -->
+    <section class="slide" data-source="[[德國柏林馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill forest">Wiki 實戰案例 01 ｜ 世界最速賽道</span>
+        <h2 class="slide-title">德國柏林馬拉松：打破極限的世界紀錄搖籃</h2>
+        <p class="slide-subtitle">初次挑戰大滿貫、追求個人最佳成績（PB）的新手殿堂首選</p>
+        <div class="metrics-bar">
+          <div class="metric-pill">📅 舉辦時程：<strong>每年 9 月最後一個週日</strong></div>
+          <div class="metric-pill">📈 賽道爬升：<strong>僅約 35 公尺</strong></div>
+          <div class="metric-pill">⏱️ 完賽時限：<strong>6 小時 15 分</strong></div>
+          <div class="metric-pill">🟢 難度評級：<strong>初級 (極平坦)</strong></div>
+        </div>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout" id="layout-berlin">
+          <!-- Optional Image Slot -->
+          <div class="image-card" id="slot-berlin">
+            <div class="image-frame">
+              <img src="images/berlin.jpg" alt="柏林馬拉松" onerror="this.closest('.split-layout').classList.add('no-image'); this.closest('.image-card').style.display='none';">
+            </div>
+            <div class="image-caption">布蘭登堡門衝線經典瞬間</div>
+          </div>
+
+          <!-- Cards Column -->
+          <div class="cards-grid grid-3">
+            <div class="card">
+              <div class="card-icon">⚡</div>
+              <div class="card-title">全球最平坦賽道</div>
+              <p class="card-text">
+                賽道寬直無陡坡，轉彎半徑大。9 月下旬<strong>氣溫穩定在 12°C 至 18°C</strong>，近乎完美的涼爽氣候讓體能衰竭降到最低。
+              </p>
+              <div class="card-highlight">累積誕生超過 13 次世界馬拉松新紀錄。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🏛️</div>
+              <div class="card-title">衝過布蘭登堡門</div>
+              <p class="card-text">
+                蒂爾加滕起跑，穿梭東西柏林歷史融合線。最後 400 公尺<strong>穿過歷史地標布蘭登堡門</strong>衝向終點，是所有跑者畢生難忘的榮耀時刻。
+              </p>
+              <div class="card-highlight">象徵和平與融合的世界級高光終點。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">💡</div>
+              <div class="card-title">新手實戰戰術指引</div>
+              <p class="card-text">
+                <strong>嚴禁前半程盲目衝刺！</strong>賽道太順暢容易產生「自己跑不累」的錯覺。建議以前半程穩定巡航、後半程平穩推進（Negative Split）為準則。
+              </p>
+              <div class="card-highlight">大滿貫首馬建立強大信心的最佳起點。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: CASE 2 - TOKYO
+         ========================================== -->
+    <section class="slide" data-source="[[日本東京馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill forest">Wiki 實戰案例 02 ｜ 亞洲第一滿貫</span>
+        <h2 class="slide-title">日本東京馬拉松：雙重賽道與極致日式私補</h2>
+        <p class="slide-subtitle">亞洲跑者零時差、無飲食障礙、體驗熱情應援的大滿貫首馬首選</p>
+        <div class="metrics-bar">
+          <div class="metric-pill">📅 舉辦時程：<strong>每年 3 月初</strong></div>
+          <div class="metric-pill">🎉 完賽率：<strong>常年超過 96%</strong></div>
+          <div class="metric-pill">⏱️ 完賽時限：<strong>寬鬆 7 小時</strong></div>
+          <div class="metric-pill">🟢 難度評級：<strong>初級 (極平坦)</strong></div>
+        </div>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout" id="layout-tokyo">
+          <div class="image-card" id="slot-tokyo">
+            <div class="image-frame">
+              <img src="images/tokyo.jpg" alt="東京馬拉松" onerror="this.closest('.split-layout').classList.add('no-image'); this.closest('.image-card').style.display='none';">
+            </div>
+            <div class="image-caption">東京都廳出發盛況</div>
+          </div>
+
+          <div class="cards-grid grid-3">
+            <div class="card">
+              <div class="card-icon">🏯</div>
+              <div class="card-title">創新的「雙重賽道」設計</div>
+              <p class="card-text">
+                <strong>前半程 0-20km「文化巡禮」</strong>：穿梭皇居與綠蔭大道，舒適熱身；<br>
+                <strong>後半程 20-42km「都市衝刺」</strong>：轉入銀座與東京車站，視覺轉換有效化解撞牆期。
+              </p>
+              <div class="card-highlight">依跑者心理學精密規劃的科學賽道。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🍡</div>
+              <div class="card-title">傳奇的在地「隱藏版私補」</div>
+              <p class="card-text">
+                沿途數十萬市民自發性應援：淺草寺周邊<strong>現烤仙貝與熱騰騰紅豆湯</strong>、銀座老店提供精緻迷你羊羹，補給能量之餘更暖心。
+              </p>
+              <div class="card-highlight">全球跑圈津津樂道的全民美食補給跑。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">💡</div>
+              <div class="card-title">新手實戰戰術指引</div>
+              <p class="card-text">
+                起跑新宿都廳前稍有緩下坡，切忌快跑；終點東京站前行幸通平整寬闊。<strong>7 小時關門時間</strong>極為友善，非常適合初馬新手完賽圓夢。
+              </p>
+              <div class="card-highlight">一般抽籤中籤率約 8%，需提早於 8 月登記。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: CASE 3 - ATHENS
+         ========================================== -->
+    <section class="slide" data-source="[[雅典經典馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill clay">Wiki 實戰案例 03 ｜ 千年歷史發源</span>
+        <h2 class="slide-title">希臘雅典經典馬拉松：兩千五百年的史詩朝聖</h2>
+        <p class="slide-subtitle">追尋傳令兵菲迪皮德斯的腳步，體驗比追求個人成績更崇高的歷史重量</p>
+        <div class="metrics-bar">
+          <div class="metric-pill">📅 舉辦時程：<strong>每年 11 月第二個週日</strong></div>
+          <div class="metric-pill">⛰️ 賽道特徵：<strong>長達 21km 連續爬升</strong></div>
+          <div class="metric-pill">🏛️ 終點地標：<strong>全大理石帕那辛奈克體育場</strong></div>
+          <div class="metric-pill">🟠 難度評級：<strong>高難度 (魔鬼坡)</strong></div>
+        </div>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout" id="layout-athens">
+          <div class="image-card" id="slot-athens">
+            <div class="image-frame">
+              <img src="images/athens.jpg" alt="雅典經典馬拉松" onerror="this.closest('.split-layout').classList.add('no-image'); this.closest('.image-card').style.display='none';">
+            </div>
+            <div class="image-caption">帕那辛奈克體育場衝線</div>
+          </div>
+
+          <div class="cards-grid grid-3">
+            <div class="card">
+              <div class="card-icon">🏛️</div>
+              <div class="card-title">正宗 42.195km 起源地</div>
+              <p class="card-text">
+                起點自馬拉松村出發，原汁原味重現<strong>公元前 490 年傳令兵菲迪皮德斯</strong>奔回雅典高呼「我們勝利了」的正宗路線，精神地位至高無上。
+              </p>
+              <div class="card-highlight clay">所有長跑運動員一生必跑一次的朝聖之旅。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">⛰️</div>
+              <div class="card-title">魔鬼上坡（10km – 31km）</div>
+              <p class="card-text">
+                全球公認挑戰性極高的正宗賽道。自 10 公里開始一路爬升至 31 公里，<strong>連續 21 公里的長坡度考驗</strong>，對股四頭肌與心肺耐力是嚴峻試煉。
+              </p>
+              <div class="card-highlight clay">過 31km 後一路下坡直衝雅典市區。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">💡</div>
+              <div class="card-title">新手實戰戰術指引</div>
+              <p class="card-text">
+                「衝著歷史意義而非個人最佳成績而戰」！寄物<strong>必須於賽前在市區 Expo 提前辦理</strong>（賽晨起點無寄物服務）；全大理石體育場衝線榮耀終生難忘。
+              </p>
+              <div class="card-highlight clay">無抽籤門檻，每年 5 月開放直接報名。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 8: CASE 4 - JUNGFRAU
+         ========================================== -->
+    <section class="slide" data-source="[[少女峰馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill ochre">Wiki 實戰案例 04 ｜ 阿爾卑斯山岳之巔</span>
+        <h2 class="slide-title">瑞士少女峰馬拉松：離天堂最近的冰河之路</h2>
+        <p class="slide-subtitle">垂直爬升近兩千公尺，領悟高山越野「快速徒步」配速的極致經典</p>
+        <div class="metrics-bar">
+          <div class="metric-pill">📅 舉辦時程：<strong>每年 9 月上旬</strong></div>
+          <div class="metric-pill">⛰️ 累積爬升：<strong>+1,953 公尺</strong></div>
+          <div class="metric-pill">🏔️ 終點海拔：<strong>2,320 公尺 (艾格冰河站)</strong></div>
+          <div class="metric-pill">🔴 難度評級：<strong>極高 (山岳越野)</strong></div>
+        </div>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout" id="layout-jungfrau">
+          <div class="image-card" id="slot-jungfrau">
+            <div class="image-frame">
+              <img src="images/jungfrau.jpg" alt="少女峰馬拉松" onerror="this.closest('.split-layout').classList.add('no-image'); this.closest('.image-card').style.display='none';">
+            </div>
+            <div class="image-caption">萬年雪峰與冰河步道</div>
+          </div>
+
+          <div class="cards-grid grid-3">
+            <div class="card">
+              <div class="card-icon">🏔️</div>
+              <div class="card-title">萬年雪峰與冰河伴跑</div>
+              <p class="card-text">
+                起跑自湖畔茵特拉肯（海拔 566m），直奔艾格峰、僧侶峰與少女峰腳下。被《富比士》與全球跑者評為<strong>「世界上最美麗的馬拉松之途」</strong>。
+              </p>
+              <div class="card-highlight ochre">嚴格限額 4,000 名，名額開放通常數小時搶罄。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🧗</div>
+              <div class="card-title">地獄考驗「溫根壁」</div>
+              <p class="card-text">
+                前半程 25km 為平緩湖岸公路；過 25km 後真正的地獄爆發——<strong>惡名昭彰的溫根壁（Wengen Wall）連續髮夾陡坡</strong>，最後 17km 陡升超過 1,000 公尺！
+              </p>
+              <div class="card-highlight ochre">高海拔稀薄空氣與乳酸堆積的雙重極限。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">💡</div>
+              <div class="card-title">新手實戰戰術指引</div>
+              <p class="card-text">
+                <strong>學會快步登山走（Power Hiking）！</strong>在坡度 &gt;12% 的長坡上，雙手扶膝推蹬比強行跑步更節省能量。裝備建議選用具備抓地齒紋的混血越野跑鞋。
+              </p>
+              <div class="card-highlight ochre">完賽時間普遍比平路全馬增加 30%~40%。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 9: CASE 5 - BIG FIVE
+         ========================================== -->
+    <section class="slide" data-source="[[南非五大野生動物馬拉松]]">
+      <header class="slide-header">
+        <span class="notion-pill clay">Wiki 實戰案例 05 ｜ 原始草原奇蹟</span>
+        <h2 class="slide-title">南非五大野生動物馬拉松：與巨獸共奔的荒野</h2>
+        <p class="slide-subtitle">毫無人工圍欄隔絕，直面非洲五霸，徹底顛覆你對路跑的想像</p>
+        <div class="metrics-bar">
+          <div class="metric-pill">📅 舉辦時程：<strong>每年 6 月中旬 (南非冬季)</strong></div>
+          <div class="metric-pill">🌿 賽事環境：<strong>無瘧疾野生動物保護區</strong></div>
+          <div class="metric-pill">🛡️ 安全維護：<strong>武裝巡邏員與直升機全線戒護</strong></div>
+          <div class="metric-pill">🔴 難度評級：<strong>極高 (荒原極限)</strong></div>
+        </div>
+      </header>
+      <div class="slide-body">
+        <div class="split-layout" id="layout-bigfive">
+          <div class="image-card" id="slot-bigfive">
+            <div class="image-frame">
+              <img src="images/bigfive.jpg" alt="南非五大野生動物馬拉松" onerror="this.closest('.split-layout').classList.add('no-image'); this.closest('.image-card').style.display='none';">
+            </div>
+            <div class="image-caption">恩塔貝尼草原五霸巡禮</div>
+          </div>
+
+          <div class="cards-grid grid-3">
+            <div class="card">
+              <div class="card-icon">🦁</div>
+              <div class="card-title">直面傳奇「非洲五霸」</div>
+              <p class="card-text">
+                賽道設於恩塔貝尼自然保護區內，<strong>毫無鐵絲網圍欄隔絕</strong>！參賽者在奔跑中與獅子、非洲象、非洲水牛、花豹與犀牛共處同片大地。
+              </p>
+              <div class="card-highlight clay">長頸鹿與斑馬在相思樹旁悠閒踱步的震撼奇景。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🏜️</div>
+              <div class="card-title">43 度極限陡坡與深沙</div>
+              <p class="card-text">
+                賽道 80% 為原始紅土與碎石。中後段迎來<strong>南半球最陡的 43 度水泥坡</strong>，以及長達數公里、深度逾 20 公分的 4x4 吉普車鬆軟深沙車轍。
+              </p>
+              <div class="card-highlight clay">深沙阻力每一步都陷落，考驗小腿深層肌耐力。</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">💡</div>
+              <div class="card-title">新手實戰戰術指引</div>
+              <p class="card-text">
+                位處 Waterberg 高原<strong>無瘧疾區（Malaria-free）</strong>，安全無虞。完賽後可無縫銜接敞篷越野車 Safari 獵遊與星空晚宴，是人生必體驗一次的跑旅天花板。
+              </p>
+              <div class="card-highlight clay">需採官方包套行程報名，名額先到先得。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 10: SEASONS CALENDAR
+         ========================================== -->
+    <section class="slide" data-source="[[全球四季跑旅日曆]]">
+      <header class="slide-header">
+        <span class="notion-pill forest">Wiki 攻略整合 01 ｜ 規劃導航</span>
+        <h2 class="slide-title">四季海外跑旅挑選指南：1 至 12 月年度規劃</h2>
+        <p class="slide-subtitle">配合氣候季節與個人訓練週期，找到最適合你的出國跑旅窗口</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-icon">🌸</div>
+            <div class="card-title">春季 (3月 – 4月)</div>
+            <p class="card-text">
+              <strong>都會平路競速季</strong><br>
+              <strong>代表賽事</strong>：<br>
+              ・3月：<strong>[[日本東京馬拉松]]</strong><br>
+              ・3月：<strong>[[羅馬馬拉松]]</strong><br>
+              ・4月：<strong>[[倫敦馬拉松]]</strong><br>
+              ・4月：<strong>[[美國大瑟爾國際馬拉松]]</strong>
+            </p>
+            <div class="card-highlight">氣溫 8°C~15°C，最易創下個人 PB。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">☀️</div>
+            <div class="card-title">夏季 (6月 – 8月)</div>
+            <p class="card-text">
+              <strong>避暑與熱帶異域挑戰</strong><br>
+              <strong>代表賽事</strong>：<br>
+              ・6月：<strong>[[南非五大野生動物馬拉松]]</strong>（南半球冬季乾爽涼爽）<br>
+              ・8月：<strong>[[吳哥窟王朝馬拉松]]</strong>（熱帶雨林千年古蹟心靈跑）
+            </p>
+            <div class="card-highlight">反季節跑旅，結合獨特文化洗禮。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🍁</div>
+            <div class="card-title">秋季 (9月 – 11月)</div>
+            <p class="card-text">
+              <strong>全球跑旅黃金大爆發</strong><br>
+              <strong>代表賽事</strong>：<br>
+              ・9月：<strong>[[德國柏林馬拉松]]</strong>、<strong>[[少女峰馬拉松]]</strong>、<strong>[[約旦佩特沙漠馬拉松]]</strong><br>
+              ・11月：<strong>[[雅典經典馬拉松]]</strong>、<strong>[[紐西蘭皇后鎮馬拉松]]</strong>、<strong>[[日本富士山]]</strong>
+            </p>
+            <div class="card-highlight">賽事最多元、景觀最壯美的巔峰季。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">❄️</div>
+            <div class="card-title">冬季 (12月 – 2月)</div>
+            <p class="card-text">
+              <strong>冬訓蓄力與抽籤期</strong><br>
+              ・基礎有氧耐力積累期<br>
+              ・全面啟動下半年大滿貫賽事（倫敦、柏林、東京）之<strong>官方抽籤與報名登記</strong>。
+            </p>
+            <div class="card-highlight">提前 6 至 12 個月鎖定參賽席位。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 11: SURVIVAL RULES & GEAR
+         ========================================== -->
+    <section class="slide" data-source="[[極限地形與山岳沙漠挑戰]]">
+      <header class="slide-header">
+        <span class="notion-pill clay">Wiki 攻略整合 02 ｜ 行前避坑</span>
+        <h2 class="slide-title">新手海外行前四大避坑法則：裝備與長途越洋物流</h2>
+        <p class="slide-subtitle">千里迢迢出國參賽，這四大實戰細節直接決定你能否順利站上起跑線</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-4">
+          <div class="card">
+            <div class="card-icon">👟</div>
+            <div class="card-title">1. 跑鞋嚴格匹配賽道</div>
+            <p class="card-text">
+              ・都會平路：厚底碳板競速鞋（柏林/東京）；<br>
+              ・山岳碎石：抓地混血越野鞋（少女峰）；<br>
+              ・沙漠賽事：<strong>必須加裝透氣防砂套 (Gaiters)</strong>，否則細砂磨破雙足！
+            </p>
+            <div class="card-highlight clay">切忌在比賽當日穿著全新跑鞋。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🧳</div>
+            <div class="card-title">2. 比賽鞋服一律隨身登機</div>
+            <p class="card-text">
+              <strong>戰袍、跑鞋、專用號碼布扣、慣用能量膠嚴禁托運！</strong>托運行李一旦延誤或丟失，海外很難在賽前買到完全適應的戰靴。
+            </p>
+            <div class="card-highlight clay">隨身登機箱就是你的完賽保險箱。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🧦</div>
+            <div class="card-title">3. 越洋飛行穿戴壓縮襪</div>
+            <p class="card-text">
+              跨洲長途飛行機艙氣壓低且久坐，極易造成雙腿嚴重水腫與肌肉僵硬。<strong>全程穿著醫療級漸進式壓縮小腿襪</strong>，每 2 小時起身走動補水。
+            </p>
+            <div class="card-highlight clay">保持雙腿輕盈與微循環彈性。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🍚</div>
+            <div class="card-title">4. 賽前 48 小時飲食安全</div>
+            <p class="card-text">
+              嚴禁在賽前嘗試未吃過之生冷海鮮或路邊攤！以白米飯、熟食義大利麵等<strong>乾淨的複合碳水化合物</strong>為主，提早 2-3 天抵達適應時差。
+            </p>
+            <div class="card-highlight clay">腸胃穩定是發揮訓練成果的第一前提。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 12: CONCLUSION
+         ========================================== -->
+    <section class="slide" data-source="[[00_世界必跑絕景馬拉松_首頁索引]]">
+      <header class="slide-header">
+        <span class="notion-pill forest">知識庫啟航 ｜ 結語</span>
+        <h2 class="slide-title">每一步都是風景，每一場都是人生</h2>
+        <p class="slide-subtitle">這份簡報只是起點，完整的 12 場深度指南已在您的 Wiki 知識庫中準備就緒</p>
+      </header>
+      <div class="slide-body">
+        <div class="cards-grid grid-3">
+          <div class="card">
+            <div class="card-icon">🗺️</div>
+            <div class="card-title">1. 開啟總首頁知識地圖</div>
+            <p class="card-text">
+              前往 <strong>[[00_世界必跑絕景馬拉松_首頁索引]]</strong>，透過多維度篩選器，依照難度、大洲或參賽目的精準挑選你的下一場目標。
+            </p>
+            <div class="card-highlight">隨時使用 Obsidian Graph View 檢視知識網絡。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📊</div>
+            <div class="card-title">2. 深入個別賽事分段戰術</div>
+            <p class="card-text">
+              查閱 12 篇獨立筆記，每一篇均附有精密的<strong>賽道海拔剖面、心碎坡攻略、寄物接駁交通與在地住宿選址建議</strong>。
+            </p>
+            <div class="card-highlight">做足最周詳的準備，享受最純粹的奔跑。</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">👟</div>
+            <div class="card-title">3. 踏出你的第一步</div>
+            <p class="card-text">
+              無論是東京的熱情應援、柏林的極速衝刺，還是阿爾卑斯山的萬年雪壁——<strong>站上起跑線，世界就在你腳下</strong>！
+            </p>
+            <div class="card-highlight">祝各位跑者海外跑旅平安完賽，光榮衝線！</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       BOTTOM NAVIGATION BAR
+       ========================================== -->
+  <footer id="bottom-nav">
+    <div class="nav-left">
+      <div class="page-counter">
+        <span id="current-index">01</span> / <span id="total-slides">12</span>
+      </div>
+      <div class="nav-controls">
+        <button class="btn-nav" id="btn-prev" title="上一頁 (←)">&#x2190;</button>
+        <button class="btn-nav" id="btn-next" title="下一頁 (→ / Space)">&#x2192;</button>
+      </div>
+      <div class="nav-tips">
+        <span class="kbd-shortcut">←</span> <span class="kbd-shortcut">→</span> 鍵盤切換
+        <span class="kbd-shortcut" style="margin-left: 6px;">F</span> 全螢幕
+      </div>
+    </div>
+
+    <!-- Persistent Information Traceability Pill -->
+    <div class="traceability-pill" id="traceability-pill">
+      <span>📚 資料來源：</span>
+      <strong id="source-name">[[00_世界必跑絕景馬拉松_首頁索引]]</strong>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       INTERACTIVE JAVASCRIPT LOGIC
+       ========================================== -->
+  <script>
+    (function() {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const currentIndexEl = document.getElementById('current-index');
+      const totalSlidesEl = document.getElementById('total-slides');
+      const sourceNameEl = document.getElementById('source-name');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= totalSlides) newIndex = totalSlides - 1;
+
+        slides[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        slides[currentIndex].classList.add('active');
+
+        // Update progress bar
+        const progressPct = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPct}%`;
+
+        // Update Counter
+        currentIndexEl.textContent = String(currentIndex + 1).padStart(2, '0');
+
+        // Update Source Pill
+        const source = slides[currentIndex].getAttribute('data-source') || '[[00_世界必跑絕景馬拉松_首頁索引]]';
+        sourceNameEl.textContent = source;
+
+        // Button States
+        btnPrev.style.opacity = currentIndex === 0 ? '0.35' : '1';
+        btnPrev.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        btnNext.style.opacity = currentIndex === totalSlides - 1 ? '0.35' : '1';
+      }
+
+      function nextSlide() {
+        if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        if (currentIndex > 0) updateSlide(currentIndex - 1);
+      }
+
+      // Button Listeners
+      btnNext.addEventListener('click', nextSlide);
+      btnPrev.addEventListener('click', prevSlide);
+
+      // Keyboard Listeners
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          updateSlide(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          updateSlide(totalSlides - 1);
+        } else if (e.key.toLowerCase() === 'f') {
+          e.preventDefault();
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      });
+
+      // Touch Swipe Listeners
+      let touchStartX = 0;
+      window.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      window.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diffX = touchStartX - touchEndX;
+        if (Math.abs(diffX) > 45) {
+          if (diffX > 0) nextSlide();
+          else prevSlide();
+        }
+      }, { passive: true });
+
+      // Init
+      updateSlide(0);
+    })();
+  </script>
+</body>
+</html>
